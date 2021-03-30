@@ -69,7 +69,8 @@ class User extends CI_Controller {
 	public function start_video_call() {
 		$myUserID = intval($this->input->post('my_user_id'));
 		$partnerUserID = intval($this->input->post('partner_user_id'));
-		$videoUUID = Util::generateUUIDv4();
+		$videoUUID = $this->input->post('video_uuid');
+		//$videoUUID = Util::generateUUIDv4();
 		$this->db->query("UPDATE `users` SET `video_uuid`='" . $videoUUID . "' WHERE `id`=" . $myUserID);
 		$this->db->query("UPDATE `users` SET `video_uuid`='" . $videoUUID . "' WHERE `id`=" . $partnerUserID);
 		$partner = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID)->row_array();
