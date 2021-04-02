@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const clients = {};
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 1237 });
 
 wss.on('connection', function connection(ws, req) {
   console.log("REQUEST URL: "+req.url);
