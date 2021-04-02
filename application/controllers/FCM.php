@@ -6,7 +6,7 @@ class FCM extends CI_Controller {
 	    $url = "https://fcm.googleapis.com/fcm/send";
 	    $serverKey = 'AAAAH_Srtxc:APA91bHlTnIwbcleCm96MiGvQy3Bh--MNYxD8KS7P_baU23-9mFJGV_D19Y659H68a7oVq_vGIQEWl6njwgKrkPv1r1azOPFXxmhV9lA_4oa5ZJefGJUda2x5VTbVWScQ-3I6DsMjAoa';
 	    $notification = array('title' => $title, 'body' => $body, 'sound' => 'default', 'badge' => '1');
-	    $arrayToSend = array('to' => $token, 'notification' => $notification, 'priority'=>'high', 'data' => $data);
+	    $arrayToSend = array('to' => $token,/* 'notification' => $notification,*/ 'priority'=>'high', 'data' => $data);
 	    $json = json_encode($arrayToSend);
 	    $headers = array();
 	    $headers[] = 'Content-Type: application/json';

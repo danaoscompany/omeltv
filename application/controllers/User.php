@@ -5,6 +5,12 @@ include "Util.php";
 
 class User extends CI_Controller {
 	
+	public function __construct() {
+        parent::__construct();
+        $this->session->set_userdata("user_id", '123');
+        echo "Current user id: (" . $this->session->userdata('user_id') . ")";
+    }
+	
 	public function login() {
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
@@ -13,6 +19,7 @@ class User extends CI_Controller {
 			$user = $users[0];
 			$user['response_code'] = 1;
 			echo json_encode($user);
+			$this->session->set_userdata('user_id', '' . $user['id']);
 		} else {
 			echo json_encode(array(
 				'response_code' => -1
@@ -67,17 +74,62 @@ class User extends CI_Controller {
 	}
 	
 	public function start_video_call() {
-		$myUserID = intval($this->input->post('my_user_id'));
-		$partnerUserID = intval($this->input->post('partner_user_id'));
-		$videoUUID = $this->input->post('video_uuid');
-		//$videoUUID = Util::generateUUIDv4();
-		$this->db->query("UPDATE `users` SET `video_uuid`='" . $videoUUID . "' WHERE `id`=" . $myUserID);
-		$this->db->query("UPDATE `users` SET `video_uuid`='" . $videoUUID . "' WHERE `id`=" . $partnerUserID);
-		$partner = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID)->row_array();
-		FCM::send_message($partner['fcm_id'], 1, "You have incoming call", "Click to connect", array(
-			'user_id' => $myUserID,
-			'video_uuid' => $videoUUID
+		$callerUserID = intval($this->input->post('caller_user_id'));
+		$receiverUserID = intval($this->input->post('receiver_user_id'));
+		/*$this->db->query("UPDATE `users` WHERE `id`=" . $callerUserID);
+		$this->db->query("UPDATE `users` WHERE `id`=" . $receiverUserID);*/
+		$receiver = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $receiverUserID)->row_array();
+		FCM::send_message($receiver['fcm_id'], 1, "You have incoming call", "Click to connect", array(
+			'caller_user_id' => "" . $callerUserID,
+			'receiver_user_id' => "" . $receiverUserID
 		));
-		echo $videoUUID;
+	}
+	
+	public function update_websocket_id() {
+		$webSocketID = $this->input->post('websocket_id');
+		$userID = intval($this->input->post('user_id'));
+		$this->db->query("UPDATE `users` SET `websocket_id`='" . $webSocketID . "' WHERE `id`=" . $userID);
+	}
+	
+	public function get_websocket_id_by_email() {
+		$email = $this->input->post('email');
+		echo $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->row_array()['websocket_id'];
+	}
+	
+	public function get_websocket_id_by_user_id() {
+		$userID = $this->input->post('user_id');
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
+		if ($user != NULL) {
+			echo $user['websocket_id'];
+		}
+	}
+	
+	public function request_receiver_websocket_id() {
+		$callerUserID = intval($this->input->post('caller_user_id'));
+		$callerWebsocketID = $this->input->post('caller_websocket_id');
+		$receiverUserID = intval($this->input->post('receiver_user_id'));
+		$receiver = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $receiverUserID)->row_array();
+		FCM::send_message($receiver['fcm_id'], 2, "Initializing call", "", array(
+			'caller_user_id' => "" . $callerUserID,
+			'caller_websocket_id' => $callerWebsocketID,
+			'receiver_user_id' => "" . $receiverUserID
+		));
+	}
+	
+	public function respond_receiver_websocket_id() {
+		$callerUserID = intval($this->input->post('caller_user_id'));
+		$receiverUserID = intval($this->input->post('receiver_user_id'));
+		$receiverWebsocketID = $this->input->post('receiver_websocket_id');
+		$caller = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $callerUserID)->row_array();
+		FCM::send_message($caller['fcm_id'], 3, "Initializing call", "", array(
+			'caller_user_id' => "" . $callerUserID,
+			'receiver_user_id' => "" . $receiverUserID,
+			'websocket_id' => $receiverWebsocketID
+		));
+	}
+	
+	public function get_user_by_id() {
+		$id = intval($this->input->post('id'));
+		echo json_encode($this->db->query("SELECT * FROM `users` WHERE `id`=" . $id)->row_array());
 	}
 }
