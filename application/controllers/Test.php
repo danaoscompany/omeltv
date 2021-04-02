@@ -7,7 +7,7 @@ class Test extends CI_Controller {
 	public function __construct() {
         parent::__construct();
         $this->session->set_userdata("user_id", '123');
-        //echo "Current user id: (" . $this->session->userdata('user_id') . ")";
+        echo "Current user id: (" . $this->session->userdata('user_id') . ")";
     }
    
    	public function index() {
