@@ -7,8 +7,9 @@ class User extends CI_Controller {
 	
 	public function __construct() {
         parent::__construct();
-        $this->session->set_userdata("user_id", '123');
-        echo "Current user id: (" . $this->session->userdata('user_id') . ")";
+        $sessionUserID = $this->input->post('_session_user_id');
+        $sessionDate = $this->input->post('_session_date');
+        $this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $sessionDate . "' WHERE `id`=" . $sessionUserID);
     }
 	
 	public function login() {
@@ -19,7 +20,7 @@ class User extends CI_Controller {
 			$user = $users[0];
 			$user['response_code'] = 1;
 			echo json_encode($user);
-			$this->session->set_userdata('user_id', '' . $user['id']);
+			$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $this->input->post('_session_date') . "' WHERE `id`=" . $user['id']);
 		} else {
 			echo json_encode(array(
 				'response_code' => -1
@@ -131,5 +132,30 @@ class User extends CI_Controller {
 	public function get_user_by_id() {
 		$id = intval($this->input->post('id'));
 		echo json_encode($this->db->query("SELECT * FROM `users` WHERE `id`=" . $id)->row_array());
+	}
+	
+	public function send_live_video_message() {
+		$senderUserID = intval($this->input->post('sender_user_id'));
+		$receiverUserID = intval($this->input->post('receiver_user_id'));
+		$message = $this->input->post('message');
+		$receiver = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $receiverUserID)->row_array();
+		$sender = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $senderUserID)->row_array();
+		$receiver = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $receiverUserID)->row_array();
+		if ($receiver != NULL) {
+			FCM::send_message($receiver['fcm_id'], 4, "New message", "", array(
+				'sender_user_id' => "" . $senderUserID,
+				'receiver_user_id' => "" . $receiverUserID,
+				'message' => $message,
+				'sender' => json_encode($sender),
+				'receiver' => json_encode($receiver)
+			));
+		}
+		echo json_encode(array(
+			'sender_user_id' => $senderUserID,
+			'receiver_user_id' => $receiverUserID,
+			'message' => $message,
+			'sender' => $sender,
+			'receiver' => $receiver
+		));
 	}
 }
