@@ -13,6 +13,10 @@ class Test extends CI_Controller {
    	public function index() {
    	}
    	
+   	public function db() {
+   		echo json_encode($this->db->query("SELECT * FROM `users`")->result_array());
+   	}
+   	
    	public function cookie() {
    		$value = $this->input->get('value');
    		$this->session->set_userdata("user_id", $value);
