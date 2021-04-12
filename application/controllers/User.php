@@ -9,7 +9,7 @@ class User extends CI_Controller {
         parent::__construct();
         $sessionUserID = $this->input->post('_session_user_id');
         $sessionDate = $this->input->post('_session_date');
-        $this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $sessionDate . "' WHERE `id`=" . $sessionUserID);
+        //$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $sessionDate . "' WHERE `id`=" . $sessionUserID);
     }
 	
 	public function login() {
