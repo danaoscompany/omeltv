@@ -35,6 +35,14 @@ class User extends CI_Controller {
 		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. " WHERE `id`=" . $userID);
 	}
 	
+	public function update_user_info() {
+		$userID = intval($this->input->post('user_id'));
+		$latitude = doubleval($this->input->post('latitude'));
+		$longitude = doubleval($this->input->post('longitude'));
+		$androidID = $this->input->post('android_id');
+		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "' WHERE `id`=" . $userID);
+	}
+	
 	public function update_fcm_id() {
 		$userID = intval($this->input->post('user_id'));
 		$fcmID = $this->input->post('fcm_id');
@@ -66,15 +74,22 @@ class User extends CI_Controller {
 		$lng = doubleval($this->input->post('lng'));
 		$category = $this->input->post('category');
 		$userID = intval($this->input->post('user_id'));
+		$date = $this->input->post('date');
+		$this->db->query("UPDATE `users` SET `is_searching`=1, `last_searching_date`='" . $date . "' WHERE `id`=" . $userID);
 		if ($category == 'all') {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " HAVING distance < 25 ORDER BY distance;")->result_array();
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB(NOW(), INTERVAL 15 SECOND) AND NOW() HAVING distance < 25 ORDER BY distance;")->result_array();
 		} else {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `gender`='" . $category . "' HAVING distance < 25 ORDER BY distance;")->result_array();
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB(NOW(), INTERVAL 15 SECOND) AND NOW() HAVING distance < 25 ORDER BY distance;")->result_array();
 		}
-		if (sizeof($partners) <= 0) {
+		/*if (sizeof($partners) <= 0) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID)->result_array();
-		}
+		}*/
 		echo json_encode($partners);
+	}
+	
+	public function done_finding_partner() {
+		$userID = intval($this->input->post('user_id'));
+		$this->db->query("UPDATE `users` SET `is_searching`=0, `last_searching_date`=NULL WHERE `id`=" . $userID);
 	}
 	
 	public function start_video_call() {
@@ -86,6 +101,15 @@ class User extends CI_Controller {
 		FCM::send_message($receiver['fcm_id'], 1, "You have incoming call", "Click to connect", array(
 			'caller_user_id' => "" . $callerUserID,
 			'receiver_user_id' => "" . $receiverUserID
+		));
+	}
+	
+	public function watch_live_stream() {
+		$fromUserID = intval($this->input->post('from_user_id'));
+		$toUserID = intval($this->input->post('to_user_id'));
+		$fcmID = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $toUserID)->row_array()['fcm_id'];
+		FCM::send_message($fcmID, 5, "", "", array(
+			'user_id' => $fromUserID
 		));
 	}
 	
@@ -159,6 +183,15 @@ class User extends CI_Controller {
 			'message' => $message,
 			'sender' => $sender,
 			'receiver' => $receiver
+		));
+	}
+	
+	public function set_is_searching() {
+		$userID = $this->input->post('user_id');
+		$isSearching = $this->input->post('is_searching');
+		$this->db->where('id', $userID);
+		$this->db->update('users', array(
+			'is_searching' => $isSearching
 		));
 	}
 }

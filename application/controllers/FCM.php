@@ -24,7 +24,7 @@ class FCM extends CI_Controller {
 	    	die('FCM Send Error: ' . curl_error($ch));
 	    }
 	    curl_close($ch);
-	    return $response;
+	    echo $response;
 	}
 	
 	static public function send_message($token, $notificationType, $title, $body, $data) {
