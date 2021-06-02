@@ -77,9 +77,9 @@ class User extends CI_Controller {
 		$date = $this->input->post('date');
 		$this->db->query("UPDATE `users` SET `is_searching`=1, `last_searching_date`='" . $date . "' WHERE `id`=" . $userID);
 		if ($category == 'all') {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' HAVING distance < 25 ORDER BY distance;")->result_array();
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
 		} else {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' HAVING distance < 25 ORDER BY distance;")->result_array();
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
 		}
 		/*if (sizeof($partners) <= 0) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID)->result_array();
