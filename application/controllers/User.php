@@ -45,6 +45,22 @@ class User extends CI_Controller {
 		}
 	}
 	
+	public function login_with_facebook() {
+		$email = $this->input->post('email');
+		$token = $this->input->post('token');
+		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "' AND `login_token`='" . $token . "'")->result_array();
+		if (sizeof($users) > 0) {
+			$user = $users[0];
+			$user['response_code'] = 1;
+			echo json_encode($user);
+			$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $this->input->post('_session_date') . "' WHERE `id`=" . $user['id']);
+		} else {
+			echo json_encode(array(
+				'response_code' => -1
+			));
+		}
+	}
+	
 	public function signup() {
 		$name = $this->input->post('name');
 		$email = $this->input->post('email');
@@ -61,6 +77,26 @@ class User extends CI_Controller {
 		$phone = $this->input->post('phone');
 		$token = $this->input->post('token');
 		$this->db->query("UPDATE `users` SET `login_token`='" . $token . "' WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'");
+	}
+	
+	public function update_login_token_with_facebook() {
+		$email = $this->input->post('email');
+		$token = $this->input->post('token');
+		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->result_array();
+		if (sizeof($users) > 0) {
+			echo json_encode($users[0]);
+			$this->db->query("UPDATE `users` SET `login_token`='" . $token . "' WHERE `email`='" . $email . "'");
+			$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $this->input->post('_session_date') . "' WHERE `id`=" . $user['id']);
+		} else {
+			$this->db->insert('users', array(
+				'email' => $email,
+				'login_token' => $token
+			));
+			$id = $this->db->insert_id();
+			$users = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $id)->result_array();
+			echo json_encode($users[0]);
+			$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $this->input->post('_session_date') . "' WHERE `id`=" . $user['id']);
+		}
 	}
 	
 	public function update_user_location() {
