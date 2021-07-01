@@ -29,13 +29,13 @@ class User extends CI_Controller {
 	}
 	
 	public function signup() {
+		$name = $this->input->post('name');
 		$email = $this->input->post('email');
 		$phone = $this->input->post('phone');
-		$password = $this->input->post('password');
 		$this->db->insert('users', array(
+			'name' => $name,
 			'email' => $email,
-			'phone' => $phone,
-			'password' => $password
+			'phone' => $phone
 		));
 	}
 	
