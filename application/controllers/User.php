@@ -201,4 +201,10 @@ class User extends CI_Controller {
 		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'")->result_array();
 		echo json_encode(sizeof($users));
 	}
+	
+	public function send_verification_code() {
+		$email = $this->input->post('email');
+		$verificationCode = $this->input->post('verification_code');
+		
+	}
 }
