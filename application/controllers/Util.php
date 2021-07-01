@@ -12,7 +12,7 @@ class Util extends CI_Controller {
 	    );
 	}
 	
-	public function send_email($email, $subject, $body) {
+	public static function send_email($email, $subject, $body) {
 		$to = $email;
 		$headers = "From: " . $email . "\r\n";
 		$headers .= "Reply-To: ". $email . "\r\n";
