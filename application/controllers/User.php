@@ -12,7 +12,7 @@ class User extends CI_Controller {
         //$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $sessionDate . "' WHERE `id`=" . $sessionUserID);
     }
 	
-	public function login() {
+	public function login_with_email_password() {
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
 		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "' AND `password`='" . $password . "'")->result_array();
@@ -37,6 +37,13 @@ class User extends CI_Controller {
 			'email' => $email,
 			'phone' => $phone
 		));
+	}
+	
+	public function update_login_token() {
+		$email = $this->input->post('email');
+		$phone = $this->input->post('phone');
+		$token = $this->input->post('token');
+		$this->db->query("UPDATE `users` SET `login_token`='" . $token . "' WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'");
 	}
 	
 	public function update_user_location() {
