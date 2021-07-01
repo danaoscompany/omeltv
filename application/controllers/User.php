@@ -28,6 +28,17 @@ class User extends CI_Controller {
 		}
 	}
 	
+	public function signup() {
+		$email = $this->input->post('email');
+		$phone = $this->input->post('phone');
+		$password = $this->input->post('password');
+		$this->db->insert('users', array(
+			'email' => $email,
+			'phone' => $phone,
+			'password' => $password
+		));
+	}
+	
 	public function update_user_location() {
 		$userID = intval($this->input->post('user_id'));
 		$latitude = doubleval($this->input->post('latitude'));
@@ -206,5 +217,11 @@ class User extends CI_Controller {
 		$email = $this->input->post('email');
 		$verificationCode = $this->input->post('verification_code');
 		Util::send_email($email, "Your verification code: " . $verificationCode, "Please enter the following code in the available field: <b>" . $verificationCode . "</b>");
+	}
+	
+	public function get_user_by_phone() {
+		$phone = $this->input->post('phone');
+		$users = $this->db->query("SELECT * FROM `users` WHERE `phone`='" . $phone . "'")->result_array();
+		echo json_encode($users);
 	}
 }
