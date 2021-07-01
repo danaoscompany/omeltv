@@ -194,4 +194,11 @@ class User extends CI_Controller {
 			'is_searching' => $isSearching
 		));
 	}
+	
+	public function is_user_exists() {
+		$email = $this->input->post('email');
+		$phone = $this->input->post('phone');
+		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'")->result_array();
+		echo json_encode(sizeof($users));
+	}
 }

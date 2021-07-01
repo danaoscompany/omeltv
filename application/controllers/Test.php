@@ -54,4 +54,8 @@ class Test extends CI_Controller {
 	public function fcm() {
 		FCM::send_message('evXJoHnXRFO0xUyyI8OhDn:APA91bE-yFIehxfoGKAMmQ8kk_2YrwiPbKY2Yrpvpkg4CpoodnEACxr5apVFUkEg6TIjjEUaokjZNmFgK6qptejJeNXUVtbFSDprUt2r4FsvouFIOCwQyjVLmGJ9bQ-yS4sTDhZ6i34_', 1, "Test title", "Test body", array());
 	}
+	
+	public function native_mail() {
+		mail("danaoscompany@gmail.com", "This is subject", "This is body");
+	}
 }
