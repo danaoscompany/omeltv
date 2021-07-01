@@ -205,6 +205,6 @@ class User extends CI_Controller {
 	public function send_verification_code() {
 		$email = $this->input->post('email');
 		$verificationCode = $this->input->post('verification_code');
-		
+		Util::send_email($email, "Your verification code: " . $verificationCode, "Please enter the following code in the available field: <b>" . $verificationCode . "</b>");
 	}
 }
