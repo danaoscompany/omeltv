@@ -355,7 +355,6 @@ class User extends CI_Controller {
 				'bio' => $bio,
 				'profile_completed' => 1
 			));
-			echo $this->upload->data()['file_name'];
 		} else {
 			echo json_encode($this->upload->display_errors());
 		}
