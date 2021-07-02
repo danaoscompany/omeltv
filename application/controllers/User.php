@@ -340,7 +340,7 @@ class User extends CI_Controller {
 		$gender = $this->input->post('gender');
 		$bio = $this->input->post('bio');
 		echo "UPDATE `users` SET `username`='".$username."',`name`='".$displayName."',`gender`='".$gender."',`bio`='".$bio."',`profile_completed`=1 WHERE `email`='".$email."'";
-		$this->db->query("UPDATE `users` SET `username`='".$username."',`name`='".$displayName."',`gender`='".$gender."',`bio`='".$bio."',`profile_completed`=1 WHERE `email`='".$email."'");
-		echo "Username: ".$username.", name: ".$displayName.",gender: ".$gender.", bio: ".$bio;
+		/*$this->db->query("UPDATE `users` SET `username`='".$username."',`name`='".$displayName."',`gender`='".$gender."',`bio`='".$bio."',`profile_completed`=1 WHERE `email`='".$email."'");
+		echo "Username: ".$username.", name: ".$displayName.",gender: ".$gender.", bio: ".$bio;*/
 	}
 }
