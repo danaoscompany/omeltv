@@ -344,7 +344,8 @@ class User extends CI_Controller {
 				'username' => $username,
 				'name' => $displayName,
 				'gender' => $gender,
-				'bio' => $bio
+				'bio' => $bio,
+				'profile_completed' => 1
 			));
 		}
 	}
