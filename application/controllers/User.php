@@ -355,6 +355,8 @@ class User extends CI_Controller {
 				'bio' => $bio,
 				'profile_completed' => 1
 			));
+		} else {
+			echo json_encode($this->upload->display_errors());
 		}
 	}
 }
