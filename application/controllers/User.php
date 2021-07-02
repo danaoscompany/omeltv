@@ -346,6 +346,6 @@ class User extends CI_Controller {
 				'bio' => $bio,
 				'profile_completed' => 1
 			));
-		echo "OK2";
+		echo "Username: ".$username.", name: ".$displayName.",gender: ".$gender.", bio: ".$bio;
 	}
 }
