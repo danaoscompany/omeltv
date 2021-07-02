@@ -93,6 +93,17 @@ class User extends CI_Controller {
 		$phone = $this->input->post('phone');
 		$token = $this->input->post('token');
 		$this->db->query("UPDATE `users` SET `login_token`='" . $token . "' WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'");
+		echo "SELECT * FROM `users` WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'";
+		return;
+		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'")->result_array();
+		if (sizeof($users) > 0) {
+			$users[0]['response_code'] = 1;
+			echo json_encode($users[0]);
+		} else {
+			echo json_encode(array(
+				'response_code' => -1
+			));
+		}
 	}
 	
 	public function update_login_token_with_facebook() {
