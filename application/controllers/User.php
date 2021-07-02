@@ -341,12 +341,12 @@ class User extends CI_Controller {
 		$bio = $this->input->post('bio');
 		$this->db->where('email', $email);
 		$this->db->update('users', array(
+				'profile_picture' => $this->upload->data()['file_name'],
 				'username' => $username,
 				'name' => $displayName,
 				'gender' => $gender,
 				'bio' => $bio,
 				'profile_completed' => 1
 			));
-		echo "Username: ".$username.", name: ".$displayName.",gender: ".$gender.", bio: ".$bio;
 	}
 }
