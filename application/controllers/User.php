@@ -339,6 +339,13 @@ class User extends CI_Controller {
 		$displayName = $this->input->post('display_name');
 		$gender = $this->input->post('gender');
 		$bio = $this->input->post('bio');
-		echo "OK";
+		$this->db->update('users', array(
+				'username' => $username,
+				'name' => $displayName,
+				'gender' => $gender,
+				'bio' => $bio,
+				'profile_completed' => 1
+			));
+		echo "OK2";
 	}
 }
