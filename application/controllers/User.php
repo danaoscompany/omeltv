@@ -348,7 +348,7 @@ class User extends CI_Controller {
 		if ($this->upload->do_upload('file')) {
 			$this->db->where('email', $email);
 			$this->db->update('users', array(
-				//'profile_picture' => $this->upload->data()['file_name'],
+				'profile_picture' => $this->upload->data()['file_name'],
 				'username' => $username,
 				'name' => $displayName,
 				'gender' => $gender,
