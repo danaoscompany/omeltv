@@ -339,8 +339,15 @@ class User extends CI_Controller {
 		$displayName = $this->input->post('display_name');
 		$gender = $this->input->post('gender');
 		$bio = $this->input->post('bio');
-		$this->db->where('email', $email);
-		$this->db->update('users', array(
+		$config = array(
+			'upload_path' => './userdata/',
+			'allowed_types' => "*",
+			'overwrite' => TRUE
+		);
+		$this->load->library('upload', $config);
+		if ($this->upload->do_upload('file')) {
+			$this->db->where('email', $email);
+			$this->db->update('users', array(
 				//'profile_picture' => $this->upload->data()['file_name'],
 				'username' => $username,
 				'name' => $displayName,
@@ -348,6 +355,9 @@ class User extends CI_Controller {
 				'bio' => $bio,
 				'profile_completed' => 1
 			));
-		echo $this->upload->data()['file_name'];
+			echo $this->upload->data()['file_name'];
+		} else {
+			echo json_encode($this->upload->display_errors());
+		}
 	}
 }
