@@ -359,4 +359,8 @@ class User extends CI_Controller {
 			echo json_encode($this->upload->display_errors());
 		}
 	}
+	
+	public function get_premium_desc() {
+	    echo $this->db->query("SELECT * FROM `settings`")->row_array()['premium_desc'];
+	}
 }
