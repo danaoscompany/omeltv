@@ -61,6 +61,10 @@ class Test extends CI_Controller {
 	}
 	
 	public function mail() {
+		Util::send_email("danaoscompany@gmail.com", "This is subject", "This is body");
+	}
+	
+	public function mail_2() {
 		Util::send_email_2("danaoscompany@gmail.com", "This is subject", "This is body");
 	}
 }
