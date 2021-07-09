@@ -1,6 +1,7 @@
 <?php
 
 include "FCM.php";
+include "Util.php";
 
 class Test extends CI_Controller {
 	
@@ -57,5 +58,9 @@ class Test extends CI_Controller {
 	
 	public function native_mail() {
 		mail("danaoscompany@gmail.com", "This is subject", "This is body");
+	}
+	
+	public function mail() {
+		Util::send_email_2("danaoscompany@gmail.com", "This is subject", "This is body");
 	}
 }
