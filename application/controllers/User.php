@@ -45,6 +45,22 @@ class User extends CI_Controller {
 		}
 	}
 	
+	public function login_with_phone() {
+		$email = $this->input->post('email');
+		$phone = $this->input->post('phone');
+		$users = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "' AND `phone`='" . $phone . "'")->result_array();
+		if (sizeof($users) > 0) {
+			$user = $users[0];
+			$user['response_code'] = 1;
+			echo json_encode($user);
+			$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $this->input->post('_session_date') . "' WHERE `id`=" . $user['id']);
+		} else {
+			echo json_encode(array(
+				'response_code' => -1
+			));
+		}
+	}
+	
 	public function login_with_facebook() {
 		$email = $this->input->post('email');
 		$token = $this->input->post('token');
@@ -366,5 +382,9 @@ class User extends CI_Controller {
 	
 	public function get_premiums() {
 	    echo json_encode($this->db->query("SELECT * FROM `premiums`")->result_array());
+	}
+	
+	public function get_settings() {
+	    echo json_encode($this->db->query("SELECT * FROM `settings`")->row_array());
 	}
 }
