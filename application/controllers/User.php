@@ -363,4 +363,8 @@ class User extends CI_Controller {
 	public function get_premium_desc() {
 	    echo $this->db->query("SELECT * FROM `settings`")->row_array()['premium_desc'];
 	}
+	
+	public function get_premiums() {
+	    echo json_encode($this->db->query("SELECT * FROM `premiums`")->result_array());
+	}
 }
