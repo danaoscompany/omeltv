@@ -387,4 +387,121 @@ class User extends CI_Controller {
 	public function get_settings() {
 	    echo json_encode($this->db->query("SELECT * FROM `settings`")->row_array());
 	}
+	
+	public function get_premium_by_product_id() {
+		$productID = $this->input->post('product_id');
+		echo json_encode($this->db->query("SELECT * FROM `premiums` WHERE `product_id`='".$productID."'")->row_array());
+	}
+	
+	public function get_blocked_users() {
+		$userID = intval($this->input->post('user_id'));
+		$blockedUsers = $this->db->query("SELECT * FROM `blocked_users` WHERE `user_id`=" . $userID)->result_array();
+		for ($i=0; $i<sizeof($blockedUsers); $i++) {
+			$blockedUsers[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $blockedUsers[$i]['blocked_user_id'])
+				->row_array();
+		}
+		echo json_encode($blockedUsers);
+	}
+	
+	public function get_blocked_user_count() {
+		$userID = intval($this->input->post('user_id'));
+		echo $this->db->query("SELECT * FROM `blocked_users` WHERE `user_id`=" . $userID)->num_rows();
+	}
+	
+	public function unblock_user() {
+		$userID = intval($this->input->post('user_id'));
+		$blockedUserID = intval($this->input->post('blocked_user_id'));
+		$this->db->query("DELETE FROM `blocked_users` WHERE `user_id`=" . $userID . " AND `blocked_user_id`=" . $blockedUserID);
+	}
+	
+	public function purchase_premium() {
+		$userID = intval($this->input->post('user_id'));
+		$productID = $this->input->post('product_id');
+		$premiumStart = $this->input->post('premium_start');
+		$this->db->where('id', $userID);
+		$this->db->update('users', array(
+			'premium_start' => $premiumStart,
+			'subscribed_product_id' => $productID
+		));
+	}
+	
+	public function delete_account() {
+		$userID = intval($this->input->post('user_id'));
+		$this->db->query("DELETE FROM `users` WHERE `id`=" . $userID);
+	}
+	
+	public function get_chats() {
+		$userID = intval($this->input->post('user_id'));
+		$chats = $this->db->query("SELECT * FROM `chats` WHERE `sender_id`=" . $userID . " OR `receiver_id`=" . $userID)->result_array();
+		for ($i=0; $i<sizeof($chats); $i++) {
+			$chats[$i]['sender'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $chats[$i]['sender_id'])->row_array();
+			$chats[$i]['receiver'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $chats[$i]['receiver_id'])->row_array();
+		}
+		echo json_encode($chats);
+	}
+	
+	public function get_chat_messages() {
+		$userID = intval($this->input->post('user_id'));
+		$chatID = intval($this->input->post('chat_id'));
+		$chat = $this->db->query("SELECT * FROM `chats` WHERE `id`=" . $chatID)->row_array();
+		$opponent = array();
+		if ($userID == intval($chat['sender_id'])) {
+			$opponent = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $chat['receiver_id'])->row_array();
+		} else {
+			$opponent = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $chat['sender_id'])->row_array();
+		}
+		$messages = $this->db->query("SELECT * FROM `chat_messages` WHERE `chat_id`=" . $chatID . " ORDER BY `date` DESC")->result_array();
+		for ($i=0; $i<sizeof($messages); $i++) {
+			$messages[$i]['sender'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $messages[$i]['sender_id'])->row_array();
+			$messages[$i]['receiver'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $messages[$i]['receiver_id'])->row_array();
+		}
+		echo json_encode(array(
+			'messages' => $messages,
+			'opponent_info' => $opponent
+		));
+	}
+	
+	public function send_message() {
+		$chatID = intval($this->input->post('chat_id'));
+		$senderID = intval($this->input->post('sender_id'));
+		$receiverID = intval($this->input->post('receiver_id'));
+		$date = $this->input->post('date');
+		$message = $this->input->post('message');
+		$this->db->insert('chat_messages', array(
+			'chat_id' => $chatID,
+			'sender_id' => $senderID,
+			'receiver_id' => $receiverID,
+			'message_type' => 'text',
+			'message' =>  $message,
+			'date' => $date
+		));
+		$messageID = intval($this->db->insert_id());
+		echo json_encode($this->db->query("SELECT * FROM `chat_messages` WHERE `id`=" . $messageID)->row_array());
+	}
+	
+	public function send_image() {
+		$chatID = intval($this->input->post('chat_id'));
+		$senderID = intval($this->input->post('sender_id'));
+		$receiverID = intval($this->input->post('receiver_id'));
+		$date = $this->input->post('date');
+		$config = array(
+			'upload_path' => './userdata/',
+			'allowed_types' => "*",
+			'overwrite' => TRUE
+		);
+		$this->load->library('upload', $config);
+		if ($this->upload->do_upload('file')) {
+			$this->db->insert('chat_messages', array(
+				'chat_id' => $chatID,
+				'sender_id' => $senderID,
+				'receiver_id' => $receiverID,
+				'message_type' => 'image',
+				'message' =>  '',
+				'image' => $this->upload->data()['file_name'],
+				'date' => $date
+			));
+			$messageID = intval($this->db->insert_id());
+			echo json_encode($this->db->query("SELECT * FROM `chat_messages` WHERE `id`=" . $messageID)->row_array());
+		}
+	}
 }
