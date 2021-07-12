@@ -67,4 +67,19 @@ class Test extends CI_Controller {
 	public function mail_2() {
 		Util::send_email_2("danaoscompany@gmail.com", "This is subject", "This is body");
 	}
+	
+	public function ids() {
+		$skippedUserIDs = json_decode("[1, 2, 3, 4, 5]", true);
+		$userID = 6;
+		array_push($skippedUserIDs, $userID);
+		$skippedIDs = "(";
+		for ($i=0; $i<sizeof($skippedUserIDs); $i++) {
+			$skippedIDs .= ($skippedUserIDs[$i].", ");
+		}
+		if (sizeof($skippedUserIDs) > 0) {
+			$skippedIDs = substr($skippedIDs, 0, strlen($skippedIDs)-2);
+		}
+		$skippedIDs .= ")";
+		echo $skippedIDs;
+	}
 }

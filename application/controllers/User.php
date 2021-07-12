@@ -210,15 +210,30 @@ class User extends CI_Controller {
 		$category = $this->input->post('category');
 		$userID = intval($this->input->post('user_id'));
 		$date = $this->input->post('date');
+		$skippedUserIDs = json_decode($this->input->post('skipped_user_ids'), true);
 		$this->db->query("UPDATE `users` SET `is_searching`=1, `last_searching_date`='" . $date . "' WHERE `id`=" . $userID);
-		if ($category == 'all') {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
+		array_push($skippedUserIDs, $userID);
+		$skippedIDs = "";
+		if (sizeof($skippedUserIDs) > 0) {
+			$skippedIDs = "(";
+			for ($i=0; $i<sizeof($skippedUserIDs); $i++) {
+				$skippedIDs .= ($skippedUserIDs[$i].", ");
+			}
+			if (sizeof($skippedUserIDs) > 0) {
+				$skippedIDs = substr($skippedIDs, 0, strlen($skippedIDs)-2);
+			}
+			$skippedIDs .= ")";
 		} else {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
+			$skippedIDs = "(-1)";
 		}
-		/*if (sizeof($partners) <= 0) {
+		if ($category == 'all') {
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
+		} else {
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
+		}
+		if (sizeof($partners) <= 0) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID)->result_array();
-		}*/
+		}
 		echo json_encode($partners);
 	}
 	
@@ -502,6 +517,184 @@ class User extends CI_Controller {
 			));
 			$messageID = intval($this->db->insert_id());
 			echo json_encode($this->db->query("SELECT * FROM `chat_messages` WHERE `id`=" . $messageID)->row_array());
+		}
+	}
+	
+	public function report_user() {
+		$userID = intval($this->input->post('user_id'));
+		$blockedUserID = intval($this->input->post('blocked_user_id'));
+		$reason = $this->input->post('reason');
+		$date = $this->input->post('date');
+		$this->db->insert('reported_users', array(
+			'user_id' => $userID,
+			'blocked_user_id' => $blockedUserID,
+			'reason' => $reason,
+			'date' => $date
+		));
+		echo "INSERT INTO `reported_users` (`user_id`, `blocked_user_id`, `reason`, `date`) VALUES (" . $userID . ", " . $blockedUserID . ", '" . $reason . "', '" . $date . "')";
+	}
+	
+	public function add_friend() {
+		$userID = intval($this->input->post('user_id'));
+		$addedUserID = intval($this->input->post('added_user_id'));
+		$date = $this->input->post('date');
+		$addedFriends = $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID)->num_rows();
+		if ($addedFriends <= 0) {
+			$this->db->insert('friend_requests', array(
+				'user_id' => $userID,
+				'added_user_id' => $addedUserID,
+				'date' => $date
+			));
+		}
+	}
+	
+	public function unfriend() {
+		$userID = intval($this->input->post('user_id'));
+		$addedUserID = intval($this->input->post('added_user_id'));
+		$addedFriends = $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID)->num_rows();
+		if ($addedFriends > 0) {
+			$this->db->query("DELETE FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID);
+		}
+	}
+	
+	public function is_friend_added() {
+		$userID = intval($this->input->post('user_id'));
+		$addedUserID = intval($this->input->post('added_user_id'));
+		echo $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID)->num_rows();
+	}
+	
+	public function get_total_friend_requests() {
+		$userID = intval($this->input->post('user_id'));
+		echo $this->db->query("SELECT * FROM `friend_requests` WHERE `added_user_id`=" . $userID)->num_rows();
+	}
+	
+	public function get_friends() {
+		$userID = intval($this->input->post('user_id'));
+		$friends = $this->db->query("SELECT * FROM `friends` WHERE `user_id_1`=" . $userID . " OR `user_id_2`=" . $userID)->result_array();
+		for ($i=0; $i<sizeof($friends); $i++) {
+			if (intval($friends[$i]['user_id_1']) == $userID) {
+				$friends[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $friends[$i]['user_id_2'])->row_array();
+			} else if (intval($friends[$i]['user_id_2']) == $userID) {
+				$friends[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $friends[$i]['user_id_1'])->row_array();
+			}
+		}
+		echo json_encode($friends);
+	}
+	
+	public function get_received_friend_requests() {
+		$userID = intval($this->input->post('user_id'));
+		$requests = $this->db->query("SELECT * FROM `friend_requests` WHERE `added_user_id`=" . $userID)->result_array();
+		for ($i=0; $i<sizeof($requests); $i++) {
+			$requests[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $requests[$i]['user_id'])->row_array();
+		}
+		echo json_encode($requests);
+	}
+	
+	public function get_sent_friend_requests() {
+		$userID = intval($this->input->post('user_id'));
+		$requests = $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID)->result_array();
+		for ($i=0; $i<sizeof($requests); $i++) {
+			$requests[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $requests[$i]['added_user_id'])->row_array();
+		}
+		echo json_encode($requests);
+	}
+	
+	public function reject_friend_request() {
+		$userID = intval($this->input->post('user_id'));
+		$addedUserID = intval($this->input->post('added_user_id'));
+		$this->db->query("DELETE FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID);
+	}
+	
+	public function accept_friend_request() {
+		$userID = intval($this->input->post('user_id'));
+		$addedUserID = intval($this->input->post('added_user_id'));
+		$date = $this->input->post('date');
+		$this->db->query("DELETE FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID);
+		$this->db->insert('friends', array(
+			'user_id_1' => $userID,
+			'user_id_2' => $addedUserID,
+			'added_date' => $date
+		));
+	}
+	
+	public function cancel_friend_request() {
+		$userID = intval($this->input->post('user_id'));
+		$addedUserID = intval($this->input->post('added_user_id'));
+		$this->db->query("DELETE FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $addedUserID);
+	}
+	
+	public function add_activity() {
+		$userID = intval($this->input->post('user_id'));
+		$opponentUserID = intval($this->input->post('opponent_user_id'));
+		$type = $this->input->post('type');
+		$date = $this->input->post('date');
+		if ($type == 'chat') {
+			$activities = $this->db->query("SELECT * FROM `activities` WHERE `user_id`=" . $userID . " AND `opponent_user_id`=" . $opponentUserID . " AND `type`='" . $type . "' ORDER BY `date` DESC LIMIT 1")->result_array();
+			if (sizeof($activities) > 0) {
+				$activity = $activities[0];
+				$diffHours = round((strtotime($activity['date']) - strtotime($date))/3600, 1);
+				if ($diffHours > 1) {
+					$this->db->insert('activities', array(
+						'user_id' => $userID,
+						'opponent_user_id' => $opponentUserID,
+						'type' => $type,
+						'date' => $date
+					));
+					return;
+				}
+			}
+		}
+		$this->db->insert('activities', array(
+			'user_id' => $userID,
+			'opponent_user_id' => $opponentUserID,
+			'type' => $type,
+			'date' => $date
+		));
+	}
+	
+	public function get_activities() {
+		$userID = intval($this->input->post('user_id'));
+		$activities = $this->db->query("SELECT * FROM `activities` WHERE `user_id`=" . $userID . " OR `opponent_user_id`=" . $userID)->result_array();
+		for ($i=0; $i<sizeof($activities); $i++) {
+			if (intval($activities[$i]['user_id']) == $userID) {
+				$activities[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $activities[$i]['opponent_user_id'])->row_array();
+			} else if (intval($activities[$i]['opponent_user_id']) == $userID) {
+				$activities[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $activities[$i]['user_id'])->row_array();
+			}
+			$isFriend = 0;
+			$friends = $this->db->query("SELECT * FROM `friends` WHERE (`user_id_1`=" . $userID . " AND `user_id_2`=" . $activities[$i]['user']['id'] . ") OR (`user_id_1`=" . $activities[$i]['user']['id'] . " AND `user_id_2`=" . $userID . ")")->result_array();
+			if (sizeof($friends) > 0) {
+				$isFriend = 1;
+			}
+			$friendRequests = $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $activities[$i]['user']['id'])->result_array();
+			if (sizeof($friendRequests) > 0) {
+				$isFriend = 1;
+			}
+			$activities[$i]['user']['is_friend'] = $isFriend;
+		}
+		echo json_encode($activities);
+	}
+	
+	public function get_chat() {
+		$userID = intval($this->input->post('user_id'));
+		$opponentUserID = intval($this->input->post('opponent_user_id'));
+		$date = $this->input->post('date');
+		$chats = $this->db->query("SELECT * FROM `chats` WHERE (`sender_id`=" . $userID . " AND `receiver_id`=" . $opponentUserID . ") OR (`sender_id`=" . $opponentUserID . " AND `receiver_id`=" . $userID . ")")->result_array();
+		if (sizeof($chats) > 0) {
+			echo json_encode($chats[0]);
+		} else {
+			$this->db->insert('chats', array(
+				'sender_id' => $userID,
+				'receiver_id' => $opponentUserID,
+				'last_update' => $date
+			));
+			$id = intval($this->db->insert_id());
+			$chats = $this->db->query("SELECT * FROM `chats` WHERE `id`=" . $id)->result_array();
+			if (sizeof($chats) > 0) {
+				echo json_encode($chats[0]);
+			} else {
+				echo json_encode(array());
+			}
 		}
 	}
 }
