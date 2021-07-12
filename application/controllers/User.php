@@ -409,6 +409,8 @@ class User extends CI_Controller {
 				'profile_completed' => 1
 			));
 		}
+		$user = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->row_array();
+		echo json_encode($user);
 	}
 	
 	public function get_premium_desc() {
