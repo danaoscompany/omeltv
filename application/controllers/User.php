@@ -227,9 +227,11 @@ class User extends CI_Controller {
 			$skippedIDs = "(-1)";
 		}
 		if ($category == 'all') {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
+			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();*/
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 ORDER BY distance;")->result_array();
 		} else {
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();
+			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();*/
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 ORDER BY distance;")->result_array();
 		}
 		if (sizeof($partners) <= 0) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID)->result_array();
