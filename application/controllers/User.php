@@ -366,6 +366,12 @@ class User extends CI_Controller {
 		echo json_encode($users);
 	}
 	
+	public function get_user_by_email() {
+		$email = $this->input->post('email');
+		$user = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->row_array();
+		echo json_encode($user);
+	}
+	
 	public function complete_profile() {
 		$email = $this->input->post('email');
 		$username = $this->input->post('username');
