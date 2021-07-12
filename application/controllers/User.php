@@ -372,24 +372,36 @@ class User extends CI_Controller {
 		$displayName = $this->input->post('display_name');
 		$gender = $this->input->post('gender');
 		$bio = $this->input->post('bio');
-		$config = array(
-			'upload_path' => './userdata/',
-			'allowed_types' => "*",
-			'overwrite' => TRUE
-		);
-		$this->load->library('upload', $config);
-		if ($this->upload->do_upload('file')) {
+		$profilePictureSet = intval($this->input->post('profile_picture_set'));
+		if ($profilePictureSet == 1) {
+			$config = array(
+				'upload_path' => './userdata/',
+				'allowed_types' => "*",
+				'overwrite' => TRUE
+			);
+			$this->load->library('upload', $config);
+			if ($this->upload->do_upload('file')) {
+				$this->db->where('email', $email);
+				$this->db->update('users', array(
+					'profile_picture' => $this->upload->data()['file_name'],
+					'username' => $username,
+					'name' => $displayName,
+					'gender' => $gender,
+					'bio' => $bio,
+					'profile_completed' => 1
+				));
+			} else {
+				echo json_encode($this->upload->display_errors());
+			}
+		} else {
 			$this->db->where('email', $email);
 			$this->db->update('users', array(
-				'profile_picture' => $this->upload->data()['file_name'],
 				'username' => $username,
 				'name' => $displayName,
 				'gender' => $gender,
 				'bio' => $bio,
 				'profile_completed' => 1
 			));
-		} else {
-			echo json_encode($this->upload->display_errors());
 		}
 	}
 	
