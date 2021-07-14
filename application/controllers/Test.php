@@ -82,4 +82,17 @@ class Test extends CI_Controller {
 		$skippedIDs .= ")";
 		echo $skippedIDs;
 	}
+	
+	public function day_month() {
+		$day = date('d', strtotime('2021-06-10'));
+		$month = date('m', strtotime('2021-06-10'));
+		echo "Day: " . $day . "\n";
+		echo "Month: " . $month . "\n";
+	}
+	
+	public function diff() {
+		$date1 = new DateTime("2021-07-10");
+		$date2 = new DateTime("2021-07-06");
+		echo "Day difference: " . $date1->diff($date2)->format("%a");
+	}
 }

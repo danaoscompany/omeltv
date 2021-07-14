@@ -175,7 +175,9 @@ class User extends CI_Controller {
 		$latitude = doubleval($this->input->post('latitude'));
 		$longitude = doubleval($this->input->post('longitude'));
 		$androidID = $this->input->post('android_id');
-		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "' WHERE `id`=" . $userID);
+		$countryCode = $this->input->post('country_code');
+		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "', `country_code`='" . $countryCode . "' WHERE `id`=" . $userID);
+		echo "UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "', `country_code`='" . $countryCode . "' WHERE `id`=" . $userID;
 	}
 	
 	public function update_fcm_id() {
@@ -208,6 +210,7 @@ class User extends CI_Controller {
 		$lat = doubleval($this->input->post('lat'));
 		$lng = doubleval($this->input->post('lng'));
 		$category = $this->input->post('category');
+		$countryCode = strtolower($this->input->post('country_code'));
 		$userID = intval($this->input->post('user_id'));
 		$date = $this->input->post('date');
 		$skippedUserIDs = json_decode($this->input->post('skipped_user_ids'), true);
@@ -227,14 +230,19 @@ class User extends CI_Controller {
 			$skippedIDs = "(-1)";
 		}
 		if ($category == 'all') {
-			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();*/
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 ORDER BY distance;")->result_array();
+			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 1 MINUTE) AND '" . $date . "' ORDER BY distance;")->result_array();*/
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `id` `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY distance;")->result_array();
 		} else {
-			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 15 SECOND) AND '" . $date . "' ORDER BY distance;")->result_array();*/
-			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 ORDER BY distance;")->result_array();
+			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 1 MINUTE) AND '" . $date . "' ORDER BY distance;")->result_array();*/
+			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY distance;")->result_array();
 		}
 		if (sizeof($partners) <= 0) {
-			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID)->result_array();
+			$partners = $this->db->query("SELECT * FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "'")->result_array();
+		}
+		//echo "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY distance;";
+		if (sizeof($partners) > 0) {
+			$partners[0]['query'] = "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY distance;";
+			$partners[0]['category'] = $category;
 		}
 		echo json_encode($partners);
 	}
@@ -498,6 +506,27 @@ class User extends CI_Controller {
 		));
 	}
 	
+	public function get_random_chat_messages() {
+		$userID = intval($this->input->post('user_id'));
+		$chatID = intval($this->input->post('chat_id'));
+		$chat = $this->db->query("SELECT * FROM `random_chats` WHERE `id`=" . $chatID)->row_array();
+		$opponent = array();
+		if ($userID == intval($chat['sender_id'])) {
+			$opponent = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $chat['receiver_id'])->row_array();
+		} else {
+			$opponent = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $chat['sender_id'])->row_array();
+		}
+		$messages = $this->db->query("SELECT * FROM `chat_messages` WHERE `chat_id`=" . $chatID . " ORDER BY `date` DESC")->result_array();
+		for ($i=0; $i<sizeof($messages); $i++) {
+			$messages[$i]['sender'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $messages[$i]['sender_id'])->row_array();
+			$messages[$i]['receiver'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $messages[$i]['receiver_id'])->row_array();
+		}
+		echo json_encode(array(
+			'messages' => $messages,
+			'opponent_info' => $opponent
+		));
+	}
+	
 	public function send_message() {
 		$chatID = intval($this->input->post('chat_id'));
 		$senderID = intval($this->input->post('sender_id'));
@@ -514,6 +543,24 @@ class User extends CI_Controller {
 		));
 		$messageID = intval($this->db->insert_id());
 		echo json_encode($this->db->query("SELECT * FROM `chat_messages` WHERE `id`=" . $messageID)->row_array());
+	}
+	
+	public function send_random_chat_message() {
+		$chatID = intval($this->input->post('chat_id'));
+		$senderID = intval($this->input->post('sender_id'));
+		$receiverID = intval($this->input->post('receiver_id'));
+		$date = $this->input->post('date');
+		$message = $this->input->post('message');
+		$this->db->insert('random_chat_messages', array(
+			'chat_id' => $chatID,
+			'sender_id' => $senderID,
+			'receiver_id' => $receiverID,
+			'message_type' => 'text',
+			'message' =>  $message,
+			'date' => $date
+		));
+		$messageID = intval($this->db->insert_id());
+		echo json_encode($this->db->query("SELECT * FROM `random_chat_messages` WHERE `id`=" . $messageID)->row_array());
 	}
 	
 	public function send_image() {
@@ -539,6 +586,32 @@ class User extends CI_Controller {
 			));
 			$messageID = intval($this->db->insert_id());
 			echo json_encode($this->db->query("SELECT * FROM `chat_messages` WHERE `id`=" . $messageID)->row_array());
+		}
+	}
+	
+	public function send_random_chat_image() {
+		$chatID = intval($this->input->post('chat_id'));
+		$senderID = intval($this->input->post('sender_id'));
+		$receiverID = intval($this->input->post('receiver_id'));
+		$date = $this->input->post('date');
+		$config = array(
+			'upload_path' => './userdata/',
+			'allowed_types' => "*",
+			'overwrite' => TRUE
+		);
+		$this->load->library('upload', $config);
+		if ($this->upload->do_upload('file')) {
+			$this->db->insert('random_chat_messages', array(
+				'chat_id' => $chatID,
+				'sender_id' => $senderID,
+				'receiver_id' => $receiverID,
+				'message_type' => 'image',
+				'message' =>  '',
+				'image' => $this->upload->data()['file_name'],
+				'date' => $date
+			));
+			$messageID = intval($this->db->insert_id());
+			echo json_encode($this->db->query("SELECT * FROM `random_chat_messages` WHERE `id`=" . $messageID)->row_array());
 		}
 	}
 	
@@ -717,6 +790,131 @@ class User extends CI_Controller {
 			} else {
 				echo json_encode(array());
 			}
+		}
+	}
+	
+	public function get_random_chat() {
+		$userID = intval($this->input->post('user_id'));
+		$opponentUserID = intval($this->input->post('opponent_user_id'));
+		$date = $this->input->post('date');
+		$chats = $this->db->query("SELECT * FROM `random_chats` WHERE (`sender_id`=" . $userID . " AND `receiver_id`=" . $opponentUserID . ") OR (`sender_id`=" . $opponentUserID . " AND `receiver_id`=" . $userID . ")")->result_array();
+		if (sizeof($chats) > 0) {
+			echo json_encode($chats[0]);
+		} else {
+			$this->db->insert('random_chats', array(
+				'sender_id' => $userID,
+				'receiver_id' => $opponentUserID,
+				'last_update' => $date
+			));
+			$id = intval($this->db->insert_id());
+			$chats = $this->db->query("SELECT * FROM `random_chats` WHERE `id`=" . $id)->result_array();
+			if (sizeof($chats) > 0) {
+				echo json_encode($chats[0]);
+			} else {
+				echo json_encode(array());
+			}
+		}
+	}
+	
+	public function create_topic() {
+		$topic = $this->input->post('topic');
+		$date = $this->input->post('date');
+		$topic = strtolower($topic);
+		$topics = $this->db->query("SELECT * FROM `topics` WHERE LOWER(`topic`) LIKE '%" . $topic . "%'")->result_array();
+		if (sizeof($topics) > 0) {
+			echo json_encode(array('response_code' => -1));
+			return;
+		}
+		$this->db->insert('topics', array(
+			'topic' => $topic,
+			'date' => $date
+		));
+		$id = $this->db->insert_id();
+		$topicObj = $this->db->query("SELECT * FROM `topics` WHERE `id`=" . $id)->row_array();
+		$topicObj['response_code'] = 1;
+		echo json_encode($topicObj);
+	}
+	
+	public function update_looking_for() {
+		$userID = intval($this->input->post('user_id'));
+		$lookingFor = $this->input->post('looking_for');
+		$this->db->where('id', $userID);
+		$this->db->update('users', array(
+			'looking_for' => $lookingFor
+		));
+	}
+	
+	public function get_max_free_uses() {
+		$userID = intval($this->input->post('user_id'));
+		$date = $this->input->post('date');
+		$premium = $this->is_premium_($userID, $date);
+		if ($premium) {
+			echo json_encode(array(
+				'male' => -1,
+				'female' => -1
+			));
+		} else {
+			$day = date('d', strtotime($date));
+			$month = date('m', strtotime($date));
+			$maxMaleUses = intval($this->db->get('settings')->row_array()['max_male_uses']);
+			$maxFemaleUses = intval($this->db->get('settings')->row_array()['max_female_uses']);
+			$freeUsesMale = $this->db->query("SELECT * FROM `max_use_statistics` WHERE `user_id`=" . $userID . " AND DAY(`date`)=" . $day . " AND MONTH(`date`)=" . $month . " AND `gender`='male'")->num_rows();
+			$freeUsesFemale = $this->db->query("SELECT * FROM `max_use_statistics` WHERE `user_id`=" . $userID . " AND DAY(`date`)=" . $day . " AND MONTH(`date`)=" . $month . " AND `gender`='female'")->num_rows();
+			echo json_encode(array(
+				'male' => $maxMaleUses-$freeUsesMale,
+				'female' => $maxFemaleUses-$freeUsesFemale
+			));
+		}
+	}
+	
+	private function is_premium_($userID, $date) {
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
+		if (intval($user['premium']) == 1) {
+			$subscribedProductID = $user['subscribed_product_id'];
+			$premiumStart = $user['premium_start'];
+			$premium = $this->db->query("SELECT * FROM `premiums` WHERE `product_id`='" . $subscribedProductID . "'")->row_array();
+			$premiumDays = intval($premium['days']);
+			$diffDays = round((strtotime($date)-strtotime($premiumStart))/(60*60*24));
+			if ($diffDays > $premiumDays) {
+				$this->db->query("UPDATE `users` SET `premium`=0 WHERE `id`=" . $userID);
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	public function update_free_use_statistics() {
+		$userID = intval($this->input->post('user_id'));
+		$gender = $this->input->post('gender');
+		$date = $this->input->post('date');
+		$this->db->insert('max_use_statistics', array(
+			'user_id' => $userID,
+			'gender' => $gender,
+			'date' => $date
+		));
+	}
+	
+	public function is_premium() {
+		$userID = intval($this->input->get('user_id'));
+		$date = $this->input->get('date');
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
+		if (intval($user['premium']) == 1) {
+			$subscribedProductID = $user['subscribed_product_id'];
+			$premiumStart = $user['premium_start'];
+			$premium = $this->db->query("SELECT * FROM `premiums` WHERE `product_id`='" . $subscribedProductID . "'")->row_array();
+			$premiumDays = intval($premium['days']);
+			$diffDays = round((strtotime($date)-strtotime($premiumStart))/(60*60*24));
+			if ($diffDays > $premiumDays) {
+				$this->db->query("UPDATE `users` SET `premium`=0 WHERE `id`=" . $userID);
+				echo 0;
+			} else {
+				echo 1;
+			}
+		} else {
+			echo 0;
 		}
 	}
 }
