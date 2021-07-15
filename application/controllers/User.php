@@ -757,16 +757,18 @@ class User extends CI_Controller {
 			} else if (intval($activities[$i]['opponent_user_id']) == $userID) {
 				$activities[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $activities[$i]['user_id'])->row_array();
 			}
-			$isFriend = 0;
-			$friends = $this->db->query("SELECT * FROM `friends` WHERE (`user_id_1`=" . $userID . " AND `user_id_2`=" . $activities[$i]['user']['id'] . ") OR (`user_id_1`=" . $activities[$i]['user']['id'] . " AND `user_id_2`=" . $userID . ")")->result_array();
-			if (sizeof($friends) > 0) {
-				$isFriend = 1;
+			if ($activities[$i]['user'] != NULL) {
+				$isFriend = 0;
+				$friends = $this->db->query("SELECT * FROM `friends` WHERE (`user_id_1`=" . $userID . " AND `user_id_2`=" . $activities[$i]['user']['id'] . ") OR (`user_id_1`=" . $activities[$i]['user']['id'] . " AND `user_id_2`=" . $userID . ")")->result_array();
+				if (sizeof($friends) > 0) {
+					$isFriend = 1;
+				}
+				$friendRequests = $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $activities[$i]['user']['id'])->result_array();
+				if (sizeof($friendRequests) > 0) {
+					$isFriend = 1;
+				}
+				$activities[$i]['user']['is_friend'] = $isFriend;
 			}
-			$friendRequests = $this->db->query("SELECT * FROM `friend_requests` WHERE `user_id`=" . $userID . " AND `added_user_id`=" . $activities[$i]['user']['id'])->result_array();
-			if (sizeof($friendRequests) > 0) {
-				$isFriend = 1;
-			}
-			$activities[$i]['user']['is_friend'] = $isFriend;
 		}
 		echo json_encode($activities);
 	}
@@ -868,6 +870,30 @@ class User extends CI_Controller {
 		}
 	}
 	
+	public function get_max_free_direct_calls() {
+		$userID = intval($this->input->post('user_id'));
+		$date = $this->input->post('date');
+		$type = $this->input->post('type'); //video_call, audio_call, chat
+		$premium = $this->is_premium_($userID, $date);
+		if ($premium) {
+			echo json_encode(array(
+				'max_free_direct_calls' => -1
+			));
+		} else {
+			$day = date('d', strtotime($date));
+			$month = date('m', strtotime($date));
+			$year = date('Y', strtotime($date));
+			$hour = date('H', strtotime($date));
+			$minute = date('i', strtotime($date));
+			$maxFreeDirectCalls = intval($this->db->get('settings')->row_array()['max_free_direct_call']);
+			$freeDirectCalls = $this->db->query("SELECT * FROM `activities` WHERE `user_id`=" . $userID . " AND DAY(`date`)=" . $day . " AND MONTH(`date`)=" . $month . " AND YEAR(`date`)=" . $year . " AND HOUR(`date`)=" . $hour . " AND `type`='" . $type . "'")->num_rows();
+			echo json_encode(array(
+				'max_free_direct_calls' => $maxFreeDirectCalls-$freeDirectCalls
+			));
+			//echo "SELECT * FROM `activities` WHERE `user_id`=" . $userID . " AND DAY(`date`)=" . $day . " AND MONTH(`date`)=" . $month . " AND YEAR(`date`)=" . $year . " AND HOUR(`date`)=" . $hour . " AND `type`='" . $type . "'";
+		}
+	}
+	
 	private function is_premium_($userID, $date) {
 		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
 		if (intval($user['premium']) == 1) {
@@ -899,8 +925,8 @@ class User extends CI_Controller {
 	}
 	
 	public function is_premium() {
-		$userID = intval($this->input->get('user_id'));
-		$date = $this->input->get('date');
+		$userID = intval($this->input->post('user_id'));
+		$date = $this->input->post('date');
 		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
 		if (intval($user['premium']) == 1) {
 			$subscribedProductID = $user['subscribed_product_id'];
