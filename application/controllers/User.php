@@ -178,6 +178,7 @@ class User extends CI_Controller {
 		$countryCode = $this->input->post('country_code');
 		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "' WHERE `id`=" . $userID);
 		$this->db->query("UPDATE `users` SET `country_code`='" . $countryCode . "' WHERE `id`=" . $userID . " AND `country_code`=NULL");
+		echo "UPDATE `users` SET `country_code`='" . $countryCode . "' WHERE `id`=" . $userID . " AND `country_code` IS NULL";
 	}
 	
 	public function update_fcm_id() {
