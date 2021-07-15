@@ -176,8 +176,8 @@ class User extends CI_Controller {
 		$longitude = doubleval($this->input->post('longitude'));
 		$androidID = $this->input->post('android_id');
 		$countryCode = $this->input->post('country_code');
-		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "', `country_code`='" . $countryCode . "' WHERE `id`=" . $userID);
-		echo "UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "', `country_code`='" . $countryCode . "' WHERE `id`=" . $userID;
+		$this->db->query("UPDATE `users` SET `latitude`=" . $latitude . ", `longitude`=" . $longitude. ", `android_id`='" . $androidID . "' WHERE `id`=" . $userID);
+		$this->db->query("UPDATE `users` SET `country_code`='" . $countryCode . "' WHERE `id`=" . $userID . " AND `country_code`=NULL");
 	}
 	
 	public function update_fcm_id() {
