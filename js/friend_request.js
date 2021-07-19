@@ -39,5 +39,5 @@ function confirmDelete(index) {
 }
 
 function add() {
-	window.location.href = "http://localhost/omeltv/admin/add";
+	window.location.href = "http://116.193.190.184/omeltv/admin/add";
 }

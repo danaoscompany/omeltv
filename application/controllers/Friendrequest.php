@@ -11,7 +11,7 @@ class Friendrequest extends CI_Controller
 				'adminID' => $adminID
 			));
 		} else {
-			header('Location: http://localhost/omeltv/login');
+			header('Location: http://116.193.190.184/omeltv/login');
 		}
 	}
 }

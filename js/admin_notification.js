@@ -47,7 +47,7 @@ function getNotifications() {
 }
 
 function editNotification(index) {
-	$.redirect("http://localhost/omeltv/notification/edit", {
+	$.redirect("http://116.193.190.184/omeltv/notification/edit", {
 		'id': notifications[index]['id']
 	});
 }
@@ -68,5 +68,5 @@ function confirmDeleteNotification(index) {
 }
 
 function addNotification() {
-	window.location.href = "http://localhost/omeltv/notification/add";
+	window.location.href = "http://116.193.190.184/omeltv/notification/add";
 }

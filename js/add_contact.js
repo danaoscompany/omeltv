@@ -14,6 +14,6 @@ function save() {
 	})
 		.then(response => response.text())
 		.then(async (response) => {
-			window.location.href = "http://localhost/omeltv/contact";
+			window.location.href = "http://116.193.190.184/omeltv/contact";
 		});
 }

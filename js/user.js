@@ -17,7 +17,7 @@ function getUsers() {
 				if (profilePicture != null && profilePicture.trim() != "") {
 					profilePicture = USERDATA_URL+profilePicture;
 				} else {
-					profilePicture = 'http://localhost/omeltv/assets/images/profile_picture_placeholder.png';
+					profilePicture = 'http://116.193.190.184/omeltv/assets/images/profile_picture_placeholder.png';
 				}
 				$("#users").append("<tr>\n" +
 					"\t\t\t\t\t\t\t\t\t\t<td>"+(i+1)+"</td>\n" +
@@ -52,5 +52,5 @@ function confirmDelete(index) {
 }
 
 function add() {
-	window.location.href = "http://localhost/omeltv/admin/add";
+	window.location.href = "http://116.193.190.184/omeltv/admin/add";
 }

@@ -23,7 +23,7 @@ function getContacts() {
 }
 
 function add() {
-	window.location.href = "http://localhost/omeltv/contact/add";
+	window.location.href = "http://116.193.190.184/omeltv/contact/add";
 }
 
 function edit(index) {

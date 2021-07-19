@@ -3,7 +3,7 @@ $(document).ready(function() {
 
 function cancel() {
 	if (confirm("Apakah Anda yakin ingin membuang konten yang Anda buat?")) {
-		window.location.href = "http://localhost/omeltv/notification";
+		window.location.href = "http://116.193.190.184/omeltv/notification";
 	}
 }
 
@@ -23,6 +23,6 @@ function save() {
 	})
 		.then(response => response.text())
 		.then(async (response) => {
-			window.location.href = "http://localhost/omeltv/notification";
+			window.location.href = "http://116.193.190.184/omeltv/notification";
 		});
 }

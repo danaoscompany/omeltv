@@ -9,15 +9,15 @@
 	<meta name="description"
 		  content="A high-quality &amp; free Bootstrap admin dashboard template pack that comes with lots of templates and components.">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link href="http://localhost/omeltv/assets/css/all.css" rel="stylesheet">
-	<link href="http://localhost/omeltv/assets/css/icon.css" rel="stylesheet">
-	<link rel="stylesheet" href="http://localhost/omeltv/assets/css/bootstrap.min.css"
+	<link href="http://116.193.190.184/omeltv/assets/css/all.css" rel="stylesheet">
+	<link href="http://116.193.190.184/omeltv/assets/css/icon.css" rel="stylesheet">
+	<link rel="stylesheet" href="http://116.193.190.184/omeltv/assets/css/bootstrap.min.css"
 		  integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<link rel="stylesheet" id="main-stylesheet" data-version="1.1.0"
-		  href="http://localhost/omeltv/assets/css/shards-dashboards.1.1.0.min.css">
-	<link rel="stylesheet" href="http://localhost/omeltv/assets/css/extras.1.1.0.min.css">
-	<script async defer src="http://localhost/omeltv/assets/js/buttons.js"></script>
-	<link rel="stylesheet" href="http://localhost/omeltv/assets/css/quill.snow.css">
+		  href="http://116.193.190.184/omeltv/assets/css/shards-dashboards.1.1.0.min.css">
+	<link rel="stylesheet" href="http://116.193.190.184/omeltv/assets/css/extras.1.1.0.min.css">
+	<script async defer src="http://116.193.190.184/omeltv/assets/js/buttons.js"></script>
+	<link rel="stylesheet" href="http://116.193.190.184/omeltv/assets/css/quill.snow.css">
 </head>
 </head>
 <body class="h-100">
@@ -30,7 +30,7 @@
 					<a class="navbar-brand w-100 mr-0" href="#" style="line-height: 25px;">
 						<div class="d-table m-auto">
 							<img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;"
-								 src="http://localhost/omeltv/assets/images/shards-dashboards-logo.svg"
+								 src="http://116.193.190.184/omeltv/assets/images/shards-dashboards-logo.svg"
 								 alt="Shards Dashboard">
 							<span class="d-none d-md-inline ml-1">Terawang</span>
 						</div>
@@ -191,24 +191,24 @@
 </div>
 <input id="select-profile-picture" type="file" style="width: 0; height: 0; visibility: hidden;">
 <input id="edited-premium-id" type="text" style="width: 0; height: 0; visibility: hidden;" value="<?php echo $editedPremiumID; ?>">
-<script src="http://localhost/omeltv/assets/js/jquery-3.3.1.min.js"
+<script src="http://116.193.190.184/omeltv/assets/js/jquery-3.3.1.min.js"
 		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-<script src="http://localhost/omeltv/assets/js/popper.min.js"
+<script src="http://116.193.190.184/omeltv/assets/js/popper.min.js"
 		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
 		crossorigin="anonymous"></script>
-<script src="http://localhost/omeltv/assets/js/bootstrap.min.js"
+<script src="http://116.193.190.184/omeltv/assets/js/bootstrap.min.js"
 		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 		crossorigin="anonymous"></script>
-<script src="http://localhost/omeltv/assets/js/Chart.min.js"></script>
-<script src="http://localhost/omeltv/assets/js/shards.min.js"></script>
-<script src="http://localhost/omeltv/assets/js/jquery.sharrre.min.js"></script>
-<script src="http://localhost/omeltv/assets/js/jquery.redirect.js"></script>
-<script src="http://localhost/omeltv/assets/js/extras.1.1.0.min.js"></script>
-<script src="http://localhost/omeltv/assets/js/shards-dashboards.1.1.0.min.js"></script>
-<script src="http://localhost/omeltv/assets/js/app/app-blog-overview.1.1.0.js"></script>
-<script src="http://localhost/omeltv/assets/js/quill.min.js"></script>
-<script src="http://localhost/omeltv/js/global.js"></script>
-<script src="http://localhost/omeltv/js/edit_premium.js"></script>
-<script src="http://localhost/omeltv/js/moment.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/Chart.min.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/shards.min.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/jquery.sharrre.min.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/jquery.redirect.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/extras.1.1.0.min.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/shards-dashboards.1.1.0.min.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/app/app-blog-overview.1.1.0.js"></script>
+<script src="http://116.193.190.184/omeltv/assets/js/quill.min.js"></script>
+<script src="http://116.193.190.184/omeltv/js/global.js"></script>
+<script src="http://116.193.190.184/omeltv/js/edit_premium.js"></script>
+<script src="http://116.193.190.184/omeltv/js/moment.js"></script>
 </body>
 </html>

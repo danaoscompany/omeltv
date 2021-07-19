@@ -20,7 +20,7 @@ $(document).ready(function() {
 });
 
 function add() {
-	window.location.href = "http://localhost/omeltv/donation/add";
+	window.location.href = "http://116.193.190.184/omeltv/donation/add";
 }
 
 function edit(index) {

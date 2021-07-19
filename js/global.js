@@ -1,5 +1,5 @@
 const PROTOCOL = "http";
-const HOST = "localhost/omeltv";
+const HOST = "116.193.190.184/omeltv";
 const API_URL = PROTOCOL+"://"+HOST;
 const USERDATA_URL = PROTOCOL+"://"+HOST+"/userdata/";
 
@@ -39,7 +39,7 @@ function getTrayNotifications() {
 }
 
 function logout() {
-	$.redirect('http://localhost/omeltv/logout');
+	$.redirect('http://116.193.190.184/omeltv/logout');
 }
 
 function formatMoney(amount) {

@@ -82,7 +82,7 @@ function goToNextPage() {
 }
 
 function edit(index) {
-	$.redirect("http://localhost/omeltv/city/edit", {
+	$.redirect("http://116.193.190.184/omeltv/city/edit", {
 		'id': cities[index]['id']
 	});
 }
@@ -103,5 +103,5 @@ function confirmDelete(index) {
 }
 
 function addNotification() {
-	window.location.href = "http://localhost/omeltv/notification/add";
+	window.location.href = "http://116.193.190.184/omeltv/notification/add";
 }
