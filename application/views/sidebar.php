@@ -15,6 +15,48 @@
 			</a>
 		</li>
 		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'user')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/user">
+				<i class="material-icons">person</i>
+				<span>Pengguna</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'blocked_user')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/blockeduser">
+				<i class="material-icons">person_off</i>
+				<span>Pengguna Diblokir</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'friend')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/friend">
+				<i class="material-icons">group</i>
+				<span>Teman</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'friend_request')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/friendrequest">
+				<i class="material-icons">group</i>
+				<span>Permintaan Pertemanan</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'premium')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/premium">
+				<i class="material-icons">local_offer</i>
+				<span>Premium</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'reported_user')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/reporteduser">
+				<i class="material-icons">flag</i>
+				<span>Pengguna Dilaporkan</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'settings')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/settings">
+				<i class="material-icons">settings</i>
+				<span>Pengaturan</span>
+			</a>
+		</li>
+		<li class="nav-item">
 			<a class="<?php echo ($current_menu == 'logout')?'nav-link active':'nav-link' ?>" href="http://localhost/omeltv/logout">
 				<i class="material-icons">logout</i>
 				<span>Keluar</span>

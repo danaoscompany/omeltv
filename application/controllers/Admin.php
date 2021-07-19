@@ -283,6 +283,12 @@ class Admin extends CI_Controller {
 		echo json_encode($admin);
 	}
 
+	public function get_premium_by_id() {
+		$id = intval($this->input->post('id'));
+		$premium = $this->db->query("SELECT * FROM `premiums` WHERE `id`=" . $id)->row_array();
+		echo json_encode($premium);
+	}
+
 	public function update_fcm_id() {
 		$adminID = intval($this->input->post('id'));
 		$fcmID = $this->input->post('fcm_id');
@@ -321,7 +327,7 @@ class Admin extends CI_Controller {
 	}
 
 	public function get_premium_prices() {
-		echo json_encode($this->db->query("SELECT * FROM `prices` ORDER BY `month`")->result_array());
+		echo json_encode($this->db->query("SELECT * FROM `premiums` ORDER BY `days`")->result_array());
 	}
 
 	public function add_credit_price() {
@@ -353,9 +359,14 @@ class Admin extends CI_Controller {
 		$this->db->query("DELETE FROM `credit_prices` WHERE `id`=" . $id);
 	}
 
-	public function delete_premium_price() {
+	public function delete_premium() {
 		$id = $this->input->post('id');
-		$this->db->query("DELETE FROM `prices` WHERE `id`=" . $id);
+		$this->db->query("DELETE FROM `premiums` WHERE `id`=" . $id);
+	}
+
+	public function delete_reported_user() {
+		$id = $this->input->post('id');
+		$this->db->query("DELETE FROM `reported_users` WHERE `id`=" . $id);
 	}
 
 	public function get_credit_price_by_id() {
@@ -368,20 +379,43 @@ class Admin extends CI_Controller {
 		echo json_encode($this->db->query("SELECT * FROM `prices` WHERE `id`=" . $id)->row_array());
 	}
 
-	public function add_premium_price() {
-		$productID = $this->input->post('product_id');
-		$month = $this->input->post('month');
+	public function add_premium() {
+		$productCode = $this->input->post('product_code');
+		$nameEn = $this->input->post('name_en');
+		$nameId = $this->input->post('name_id');
+		$descEn = $this->input->post('desc_en');
+		$descId = $this->input->post('desc_id');
+		$days = $this->input->post('days');
 		$price = $this->input->post('price');
-		$benefitsId = $this->input->post('benefits_id');
-		$benefitsEn = $this->input->post('benefits_en');
-		$benefitsZh = $this->input->post('benefits_zh');
-		$this->db->insert('prices', array(
-			'product_id' => $productID,
-			'month' => $month,
-			'price' => $price,
-			'benefits_id' => $benefitsId,
-			'benefits_en' => $benefitsEn,
-			'benefits_zh' => $benefitsZh
+		$this->db->insert('premiums', array(
+			'product_id' => $productCode,
+			'name_en' => $nameEn,
+			'name_id' => $nameId,
+			'desc_en' => $descEn,
+			'desc_id' => $descId,
+			'days' => $days,
+			'price' => $price
+		));
+	}
+
+	public function update_premium() {
+		$id = $this->input->post('id');
+		$productCode = $this->input->post('product_code');
+		$nameEn = $this->input->post('name_en');
+		$nameId = $this->input->post('name_id');
+		$descEn = $this->input->post('desc_en');
+		$descId = $this->input->post('desc_id');
+		$days = $this->input->post('days');
+		$price = $this->input->post('price');
+		$this->db->where('id', $id);
+		$this->db->update('premiums', array(
+			'product_id' => $productCode,
+			'name_en' => $nameEn,
+			'name_id' => $nameId,
+			'desc_en' => $descEn,
+			'desc_id' => $descId,
+			'days' => $days,
+			'price' => $price
 		));
 	}
 
@@ -782,21 +816,33 @@ class Admin extends CI_Controller {
 	}
 
 	public function update_settings() {
-		$freeQuestionsPerMonth = intval($this->input->post('free_questions_per_month'));
-		$address = $this->input->post('address');
-		$igLink = $this->input->post('ig_link');
-		$fbLink = $this->input->post('fb_link');
-		$twitterLink = $this->input->post('twitter_link');
-		$copyright = $this->input->post('copyright');
-		$promoVideo = $this->input->post('promo_video');
+		$loginHelpEn = $this->input->post('login_help_en');
+		$loginHelpId = $this->input->post('login_help_id');
+		$signupHelpEn = $this->input->post('signup_help_en');
+		$signupHelpId = $this->input->post('signup_help_id');
+		$premiumDescEn = $this->input->post('premium_desc_en');
+		$premiumDescId = $this->input->post('premium_desc_id');
+		$aboutEn = $this->input->post('about_en');
+		$aboutId = $this->input->post('about_id');
+		$welcomePremiumEn = $this->input->post('welcome_premium_en');
+		$welcomePremiumId = $this->input->post('welcome_premium_id');
+		$maxMaleUses = $this->input->post('max_male_uses');
+		$maxFemaleUses = $this->input->post('max_female_uses');
+		$maxFreeDirectCall = $this->input->post('max_free_direct_call');
 		$this->db->update('settings', array(
-			'free_questions_per_month' => $freeQuestionsPerMonth,
-			'address' => $address,
-			'ig_link' => $igLink,
-			'fb_link' => $fbLink,
-			'twitter_link' => $twitterLink,
-			'copyright' => $copyright,
-			'promo_video' => $promoVideo
+			'login_help_en' => $loginHelpEn,
+			'login_help_id' => $loginHelpId,
+			'signup_help_en' => $signupHelpEn,
+			'signup_help_id' => $signupHelpId,
+			'premium_desc_en' => $premiumDescEn,
+			'premium_desc_id' => $premiumDescId,
+			'about_en' => $aboutEn,
+			'about_id' => $aboutId,
+			'welcome_premium_en' => $welcomePremiumEn,
+			'welcome_premium_id' => $welcomePremiumId,
+			'max_male_uses' => $maxMaleUses,
+			'max_female_uses' => $maxFemaleUses,
+			'max_free_direct_call' => $maxFreeDirectCall
 		));
 	}
 
@@ -812,5 +858,67 @@ class Admin extends CI_Controller {
 	public function delete_activity() {
 		$id = $this->input->post('id');
 		$this->db->query("DELETE FROM `activities` WHERE `id`=" . $id);
+	}
+
+	public function get_blocked_users() {
+		$blockedUsers = $this->db->query("SELECT * FROM `blocked_users` ORDER BY `date` DESC")->result_array();
+		for ($i=0; $i<sizeof($blockedUsers); $i++) {
+			$blockedUsers[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $blockedUsers[$i]['user_id'])->row_array();
+			$blockedUsers[$i]['blocked_user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $blockedUsers[$i]['blocked_user_id'])->row_array();
+		}
+		echo json_encode($blockedUsers);
+	}
+
+	public function delete_blocked_user() {
+		$id = $this->input->post('id');
+		$this->db->query("DELETE FROM `blocked_users` WHERE `id`=" . $id);
+	}
+
+	public function get_friends() {
+		$friends = $this->db->query("SELECT * FROM `friends` ORDER BY `added_date` DESC")->result_array();
+		for ($i=0; $i<sizeof($friends); $i++) {
+			$friends[$i]['user_1'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $friends[$i]['user_id_1'])->row_array();
+			$friends[$i]['user_2'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $friends[$i]['user_id_2'])->row_array();
+		}
+		echo json_encode($friends);
+	}
+
+	public function get_friend_requests() {
+		$friends = $this->db->query("SELECT * FROM `friend_requests` ORDER BY `date` DESC")->result_array();
+		for ($i=0; $i<sizeof($friends); $i++) {
+			$friends[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $friends[$i]['user_id'])->row_array();
+			$friends[$i]['added_user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $friends[$i]['added_user_id'])->row_array();
+		}
+		echo json_encode($friends);
+	}
+
+	public function delete_friend() {
+		$id = intval($this->input->post('id'));
+		$this->db->query("DELETE FROM `friends` WHERE `id`=" . $id);
+	}
+
+	public function delete_friend_request() {
+		$id = intval($this->input->post('id'));
+		$this->db->query("DELETE FROM `friend_requests` WHERE `id`=" . $id);
+	}
+
+	public function get_reported_users() {
+		$reportedUsers = $this->db->query("SELECT * FROM `reported_users` ORDER BY `date` DESC")->result_array();
+		for ($i=0; $i<sizeof($reportedUsers); $i++) {
+			$reportedUsers[$i]['user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $reportedUsers[$i]['user_id'])->row_array();
+			$reportedUsers[$i]['blocked_user'] = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $reportedUsers[$i]['blocked_user_id'])->row_array();
+		}
+		echo json_encode($reportedUsers);
+	}
+
+	public function block_user() {
+		$userID = intval($this->input->post('user_id'));
+		$blockedUserID = intval($this->input->post('blocked_user_id'));
+		$date = $this->input->post('date');
+		$this->db->insert('blocked_users', array(
+			'user_id' => $userID,
+			'blocked_user_id' => $blockedUserID,
+			'date' => $date
+		));
 	}
 }

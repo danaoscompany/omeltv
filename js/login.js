@@ -21,7 +21,7 @@ function login() {
 			localStorage.setItem("user_id", parseInt(obj['user_id']));
 			let responseCode = parseInt(obj['response_code']);
 			if (responseCode == 1) {
-				window.location.href = API_URL+"/notification";
+				window.location.href = API_URL+"/admin";
 			} else if (responseCode == -1) {
 				alert("Kombinasi email dan kata sandi salah");
 			}

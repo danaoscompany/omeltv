@@ -11,6 +11,17 @@ class User extends CI_Controller {
         $sessionDate = $this->input->post('_session_date');
         //$this->db->query("UPDATE `users` SET `online`=1, `last_online_date`='" . $sessionDate . "' WHERE `id`=" . $sessionUserID);
     }
+
+	public function index() {
+		if ($this->session->logged_in == 1) {
+			$adminID = $this->session->user_id;
+			$this->load->view('user', array(
+				'adminID' => $adminID
+			));
+		} else {
+			header('Location: http://localhost/omeltv/login');
+		}
+	}
 	
 	public function login_with_email_password() {
 		$email = $this->input->post('email');
