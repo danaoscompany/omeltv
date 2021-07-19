@@ -32,7 +32,7 @@
 							<img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;"
 								 src="http://116.193.190.184/omeltv/assets/images/shards-dashboards-logo.svg"
 								 alt="Shards Dashboard">
-							<span class="d-none d-md-inline ml-1">Terawang</span>
+							<span class="d-none d-md-inline ml-1">OmelTV</span>
 						</div>
 					</a>
 					<a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
