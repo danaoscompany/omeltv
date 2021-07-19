@@ -203,7 +203,13 @@ class User extends CI_Controller {
 	
 	public function get_topics() {
 		$date = $this->input->post('date');
-		$topics = $this->db->query("SELECT * FROM `topics` WHERE `date`<='" . $date . "' ORDER BY `date` DESC LIMIT 10")->result_array();
+		$topics = $this->db->query("SELECT * FROM `topics` WHERE `type`='public' AND `date`<='" . $date . "' ORDER BY `date` DESC LIMIT 10")->result_array();
+		echo json_encode($topics);
+	}
+	
+	public function get_private_topics() {
+		$userID = intval($this->input->post('user_id'));
+		$topics = $this->db->query("SELECT * FROM `topics` WHERE `type`='private' AND `user_id`=" . $userID . " ORDER BY `date` DESC")->result_array();
 		echo json_encode($topics);
 	}
 	
@@ -820,6 +826,7 @@ class User extends CI_Controller {
 	}
 	
 	public function create_topic() {
+		$userID = intval($this->input->post('user_id'));
 		$topic = $this->input->post('topic');
 		$date = $this->input->post('date');
 		$topic = strtolower($topic);
@@ -829,7 +836,9 @@ class User extends CI_Controller {
 			return;
 		}
 		$this->db->insert('topics', array(
+			'user_id' => $userID,
 			'topic' => $topic,
+			'type' => 'private',
 			'date' => $date
 		));
 		$id = $this->db->insert_id();
