@@ -114,6 +114,11 @@ class Admin extends CI_Controller {
 		$this->db->query("DELETE FROM `notifications` WHERE `id`=" . $id);
 	}
 
+	public function delete_topic() {
+		$id = intval($this->input->post('id'));
+		$this->db->query("DELETE FROM `topics` WHERE `id`=" . $id);
+	}
+
 	public function get_notification_by_id() {
 		$id = intval($this->input->post('id'));
 		echo json_encode($this->db->query("SELECT * FROM `notifications` WHERE `id`=" . $id)->row_array());
@@ -287,6 +292,12 @@ class Admin extends CI_Controller {
 		$id = intval($this->input->post('id'));
 		$premium = $this->db->query("SELECT * FROM `premiums` WHERE `id`=" . $id)->row_array();
 		echo json_encode($premium);
+	}
+
+	public function get_topic_by_id() {
+		$id = intval($this->input->post('id'));
+		$topic = $this->db->query("SELECT * FROM `topics` WHERE `id`=" . $id)->row_array();
+		echo json_encode($topic);
 	}
 
 	public function update_fcm_id() {
@@ -617,19 +628,15 @@ class Admin extends CI_Controller {
 		$emailChanged = intval($this->input->post('email_changed'));
 		$phone = $this->input->post('phone');
 		$phoneChanged = intval($this->input->post('phone_changed'));
-		$password = $this->input->post('password');
-		$birthPlace = $this->input->post('birth_place');
-		$birthday = $this->input->post('birthday');
+		$username = $this->input->post('username');
 		$gender = $this->input->post('gender');
-		$job = $this->input->post('job');
-		$relationshipStatus = $this->input->post('relationship_status');
-		$emailVerified = intval($this->input->post('email_verified'));
-		$phoneVerified = intval($this->input->post('phone_verified'));
-		$profileCompleted = intval($this->input->post('profile_completed'));
-		$credits = intval($this->input->post('credits'));
+		$lookingFor = $this->input->post('looking_for');
+		$androidID = $this->input->post('android_id');
+		$bio = $this->input->post('bio');
 		$premium = intval($this->input->post('premium'));
-		$monthPremium = intval($this->input->post('month_premium'));
-		$profilePictureChanged = intval($this->input->post('profile_picture_changed'));
+		$subscribedProductID = $this->input->post('subscribed_product_id');
+		$premiumStart = $this->input->post('premium_start');
+		$countryCode = $this->input->post('country_code');
 		if ($emailChanged == 1) {
 			$userCount = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->num_rows();
 			if ($userCount > 0) {
@@ -648,61 +655,24 @@ class Admin extends CI_Controller {
 				return;
 			}
 		}
-		if ($profilePictureChanged == 1) {
-			$config['upload_path']          = './userdata/';
-			$config['allowed_types']        = '*';
-			$config['max_size']             = 2147483647;
-			$config['file_name']            = Util::generateUUIDv4();
-			$this->load->library('upload', $config);
-			if ($this->upload->do_upload('file')) {
-				$this->db->where('id', $id);
-				$this->db->update('users', array(
-					'name' => $name,
-					'email' => $email,
-					'phone' => $phone,
-					'password' => $password,
-					'birth_place' => $birthPlace,
-					'birthday' => $birthday,
-					'gender' => $gender,
-					'job' => $job,
-					'relationship_status' => $relationshipStatus,
-					'email_verified' => $emailVerified,
-					'phone_verified' => $phoneVerified,
-					'profile_completed' => $profileCompleted,
-					'credits' => $credits,
-					'premium' => $premium,
-					'premium_months' => $monthPremium,
-					'profile_picture' => $this->upload->data()['file_name']
-				));
-				echo json_encode(array(
-					'response_code' => 1
-				));
-			} else {
-				echo json_encode($this->upload->display_errors());
-			}
-		} else {
-			$this->db->where('id', $id);
-			$this->db->update('users', array(
-				'name' => $name,
-				'email' => $email,
-				'phone' => $phone,
-				'password' => $password,
-				'birth_place' => $birthPlace,
-				'birthday' => $birthday,
-				'gender' => $gender,
-				'job' => $job,
-				'relationship_status' => $relationshipStatus,
-				'email_verified' => $emailVerified,
-				'phone_verified' => $phoneVerified,
-				'profile_completed' => $profileCompleted,
-				'credits' => $credits,
-				'premium' => $premium,
-				'premium_months' => $monthPremium
-			));
-			echo json_encode(array(
-				'response_code' => 1
-			));
-		}
+		$this->db->where('id', $id);
+		$this->db->update('users', array(
+			'name' => $name,
+			'email' => $email,
+			'phone' => $phone,
+			'username' => $username,
+			'gender' => $gender,
+			'looking_for' => $lookingFor,
+			'android_id' => $androidID,
+			'bio' => $bio,
+			'premium' => $premium,
+			'subscribed_product_id' => $subscribedProductID,
+			'premium_start' => $premiumStart,
+			'country_code' => $countryCode
+		));
+		echo json_encode(array(
+			'response_code' => 1
+		));
 	}
 
 	public function delete_user() {
@@ -918,6 +888,33 @@ class Admin extends CI_Controller {
 		$this->db->insert('blocked_users', array(
 			'user_id' => $userID,
 			'blocked_user_id' => $blockedUserID,
+			'date' => $date
+		));
+	}
+
+	public function get_topics() {
+		$topics = $this->db->query("SELECT * FROM `topics` WHERE `type`='public' ORDER BY `topic`")->result_array();
+		echo json_encode($topics);
+	}
+
+	public function add_topic() {
+		$topic = $this->input->post('topic');
+		$date = $this->input->post('date');
+		$this->db->insert('topics', array(
+			'topic' => $topic,
+			'type' => 'public',
+			'date' => $date
+		));
+	}
+
+	public function update_topic() {
+		$id = intval($this->input->post('id'));
+		$topic = $this->input->post('topic');
+		$date = $this->input->post('date');
+		$this->db->where('id', $id);
+		$this->db->update('topics', array(
+			'topic' => $topic,
+			'type' => 'public',
 			'date' => $date
 		));
 	}

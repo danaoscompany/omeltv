@@ -5,7 +5,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title>Pengguna</title>
+	<title>Topik</title>
 	<meta name="description" content="A high-quality &amp; free Bootstrap admin dashboard template pack that comes with lots of templates and components.">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link href="assets/css/all.css" rel="stylesheet">
@@ -42,7 +42,7 @@
 					</div>
 					<input class="navbar-search form-control" type="text" placeholder="Search for something..." aria-label="Search"> </div>
 			</form>
-			<?php $this->load->view('sidebar', array('current_menu' => 'user')); ?>
+			<?php $this->load->view('sidebar', array('current_menu' => 'topic')); ?>
 		</aside>
 		<!-- End Main Sidebar -->
 		<main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3">
@@ -55,8 +55,8 @@
 				<!-- Page Header -->
 				<div class="page-header row no-gutters py-4">
 					<div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-						<span class="text-uppercase page-subtitle">Pengguna</span>
-						<h3 class="page-title">Pengguna</h3>
+						<span class="text-uppercase page-subtitle">Topik</span>
+						<h3 class="page-title">Topik</h3>
 
 					</div>
 				</div>
@@ -64,24 +64,25 @@
 				<div class="row">
 					<div class="col">
 						<div style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
+							<button type="button" class="mb-2 btn btn-sm btn-primary mr-1" style=""
+									onclick="add()">Tambah</button>
 						</div>
 						<div class="card card-small mb-4" style="margin-top: 8px;">
 							<div class="card-header border-bottom">
-								<h6 class="m-0">Pengguna</h6>
+								<h6 class="m-0">Topik</h6>
 							</div>
 							<div class="card-body p-0 pb-3 text-center">
 								<table class="table mb-0">
 									<thead class="bg-light">
 									<tr>
 										<th scope="col" class="border-0">#</th>
-										<th scope="col" class="border-0">Foto</th>
-										<th scope="col" class="border-0">Nama</th>
-										<th scope="col" class="border-0">Email</th>
+										<th scope="col" class="border-0">Topik</th>
+										<th scope="col" class="border-0">Tanggal</th>
 										<th scope="col" class="border-0">Ubah</th>
 										<th scope="col" class="border-0">Hapus</th>
 									</tr>
 									</thead>
-									<tbody id="users">
+									<tbody id="topics">
 									<!--<tr>
 										<td>1</td>
 										<td>Ali</td>
@@ -111,6 +112,6 @@
 <script src="assets/js/app/app-blog-overview.1.1.0.js"></script>
 <script src="assets/js/moment.js"></script>
 <script src="js/global.js"></script>
-<script src="js/user.js"></script>
+<script src="js/topic.js"></script>
 </body>
 </html>

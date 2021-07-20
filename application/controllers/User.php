@@ -22,6 +22,19 @@ class User extends CI_Controller {
 			header('Location: http://116.193.190.184/omeltv/login');
 		}
 	}
+
+	public function edit() {
+		if ($this->session->logged_in == 1) {
+			$adminID = $this->session->user_id;
+			$id = intval($this->input->post('id'));
+			$this->load->view('user/edit', array(
+				'adminID' => $adminID,
+				'editedUserID' => $id
+			));
+		} else {
+			header('Location: http://116.193.190.184/omeltv/login');
+		}
+	}
 	
 	public function login_with_email_password() {
 		$email = $this->input->post('email');
@@ -431,6 +444,44 @@ class User extends CI_Controller {
 				'username' => $username,
 				'name' => $displayName,
 				'gender' => $gender,
+				'bio' => $bio,
+				'profile_completed' => 1
+			));
+		}
+		$user = $this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->row_array();
+		echo json_encode($user);
+	}
+	
+	public function edit_profile() {
+		$email = $this->input->post('email');
+		$username = $this->input->post('username');
+		$displayName = $this->input->post('display_name');
+		$bio = $this->input->post('bio');
+		$profilePictureSet = intval($this->input->post('profile_picture_set'));
+		if ($profilePictureSet == 1) {
+			$config = array(
+				'upload_path' => './userdata/',
+				'allowed_types' => "*",
+				'overwrite' => TRUE
+			);
+			$this->load->library('upload', $config);
+			if ($this->upload->do_upload('file')) {
+				$this->db->where('email', $email);
+				$this->db->update('users', array(
+					'profile_picture' => $this->upload->data()['file_name'],
+					'username' => $username,
+					'name' => $displayName,
+					'bio' => $bio,
+					'profile_completed' => 1
+				));
+			} else {
+				echo json_encode($this->upload->display_errors());
+			}
+		} else {
+			$this->db->where('email', $email);
+			$this->db->update('users', array(
+				'username' => $username,
+				'name' => $displayName,
 				'bio' => $bio,
 				'profile_completed' => 1
 			));

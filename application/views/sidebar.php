@@ -39,6 +39,12 @@
 			</a>
 		</li>
 		<li class="nav-item">
+			<a class="<?php echo ($current_menu == 'topic')?'nav-link active':'nav-link' ?>" href="http://116.193.190.184/omeltv/topic">
+				<i class="material-icons">signal_cellular_alt</i>
+				<span>Topic</span>
+			</a>
+		</li>
+		<li class="nav-item">
 			<a class="<?php echo ($current_menu == 'premium')?'nav-link active':'nav-link' ?>" href="http://116.193.190.184/omeltv/premium">
 				<i class="material-icons">local_offer</i>
 				<span>Premium</span>

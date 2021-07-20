@@ -24,6 +24,7 @@ function getUsers() {
 					"\t\t\t\t\t\t\t\t\t\t<td><img src='"+profilePicture+"' width='40px' height='40px' style='border-radius: 20px;'>"+"</td>\n" +
 					"\t\t\t\t\t\t\t\t\t\t<td>"+user['name']+"</td>\n" +
 					"\t\t\t\t\t\t\t\t\t\t<td>"+user['email']+"</td>\n" +
+					"\t\t\t\t\t\t\t\t\t\t<td><button type=\"button\" class=\"mb-2 btn btn-sm btn-primary mr-1\" onclick='edit("+i+")'>Ubah</button></td>\n" +
 					"\t\t\t\t\t\t\t\t\t\t<td><button type=\"button\" class=\"mb-2 btn btn-sm btn-danger mr-1\" onclick='confirmDelete("+i+")'>Hapus</button></td>\n" +
 					"\t\t\t\t\t\t\t\t\t</tr>");
 			}
@@ -31,7 +32,7 @@ function getUsers() {
 }
 
 function edit(index) {
-	$.redirect(API_URL+"/admin/edit", {
+	$.redirect(API_URL+"/user/edit", {
 		'id': users[index]['id']
 	});
 }
