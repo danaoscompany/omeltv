@@ -79,18 +79,18 @@
 								<div id="signup-help-en" style="height: 200px;"></div>
 								<span>Bantuan daftar (Bahasa Indonesia):</span>
 								<div id="signup-help-id" style="height: 200px;"></div>
-								<span>Deskripsi Premium (English):</span>
-								<div id="premium-desc-en" style="height: 200px;"></div>
-								<span>Deskripsi Premium (Bahasa Indonesia):</span>
-								<div id="premium-desc-id" style="height: 200px;"></div>
+								<span>Deskripsi Premium (English):</span><br/>
+								<textarea id="premium-desc-en" style="width: 100%; height: 200px;"></textarea><br/>
+								<span>Deskripsi Premium (Bahasa Indonesia):</span><br/>
+								<textarea id="premium-desc-id" style="width: 100%; height: 200px;"></textarea><br/>
 								<span>Tentang (English):</span>
 								<div id="about-en" style="height: 200px;"></div>
 								<span>Tentang (Bahasa Indonesia):</span>
 								<div id="about-id" style="height: 200px;"></div>
-								<span>Pengantar Premium (English):</span>
-								<div id="welcome-premium-en" style="height: 200px;"></div>
-								<span>Pengantar Premium (Bahasa Indonesia):</span>
-								<div id="welcome-premium-id" style="height: 200px;"></div>
+								<span>Pengantar Premium (English):</span><br/>
+								<textarea id="welcome-premium-en" style="width: 100%; height: 200px;"></textarea><br/>
+								<span>Pengantar Premium (Bahasa Indonesia):</span><br/>
+								<textarea id="welcome-premium-id" style="width: 100%; height: 200px;"></textarea><br/>
 								<span>Maksimum pilih gender laki-laki:</span>
 								<input type="number" class="form-control" id="max-male-uses"
 									   placeholder="Maksimum penggunaan gender laki-laki">
