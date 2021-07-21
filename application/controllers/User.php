@@ -274,7 +274,7 @@ class User extends CI_Controller {
 			}
 		}
 		if (sizeof($partners) <= 0) {
-			$partners = $this->db->query("SELECT * FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "'")->result_array();
+			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "'")->result_array();
 		}
 		//echo "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY distance;";
 		/*if (sizeof($partners) > 0) {
