@@ -1073,6 +1073,6 @@ class User extends CI_Controller {
 			echo json_encode(array('response_code' => 1));
 			return;
 		}
-		echo json_encode(array('response_code' => 1));
+		echo json_encode(array('response_code' => 0));
 	}
 }
