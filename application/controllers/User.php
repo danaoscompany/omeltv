@@ -1043,6 +1043,12 @@ class User extends CI_Controller {
 		$this->db->query("UPDATE `users` SET `candidate_user_id`=0 WHERE `id`=" . $partnerUserID);
 	}
 	
+	public function user_remove_self_candidate() {
+		$userID = intval($this->input->post('user_id'));
+		$this->db->query("UPDATE `users` SET `user_find_candidate`=0 WHERE `id`=" . $userID);
+		$this->db->query("UPDATE `users` SET `candidate_user_id`=0 WHERE `id`=" . $userID);
+	}
+	
 	public function reset_user_connection_data() {
 		$userID = intval($this->input->post('user_id'));
 		$this->db->query("UPDATE `users` SET `is_searching`=0, `user_find_candidate`=0, `candidate_user_id`=0 WHERE `id`=" . $userID);
