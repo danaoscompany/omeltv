@@ -1054,7 +1054,7 @@ class User extends CI_Controller {
 		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID . " AND `candidate_user_id`=" . $partnerUserID)
 			->num_rows();
 		if ($userCount > 0) {
-			echo json_encode(array('response_code' => 0));
+			echo json_encode(array('response_code' => 2));
 			return;
 		}
 		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID . " AND `candidate_user_id`=" . $userID)
