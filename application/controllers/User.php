@@ -1059,6 +1059,11 @@ class User extends CI_Controller {
 			echo json_encode(array('response_code' => 0));
 			return;
 		}
+		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID . " AND `user_find_candidate`=1 AND `candidate_user_id`!=" . $partnerUserID)->num_rows();
+		if ($userCount > 0) {
+			echo json_encode(array('response_code' => 1));
+			return;
+		}
 		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID . " AND `user_find_candidate`=1 AND `candidate_user_id`!=" . $userID)->num_rows();
 		if ($userCount > 0) {
 			echo json_encode(array('response_code' => 1));
