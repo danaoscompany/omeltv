@@ -274,9 +274,9 @@ class User extends CI_Controller {
 			}
 		}
 		/* FOR TEST ONLY */
-		if ($userID == 9) {
+		/*if ($userID == 9) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`=8")->result_array();
-		}
+		}*/
 		/*if (sizeof($partners) <= 0) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY RAND();")->result_array();
 		}*/
