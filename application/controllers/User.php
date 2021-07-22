@@ -274,9 +274,9 @@ class User extends CI_Controller {
 			}
 		}
 		/* FOR TEST ONLY */
-		/*if ($userID == 9) {
+		if ($userID == 9) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`=8")->result_array();
-		}*/
+		}
 		/*if (sizeof($partners) <= 0) {
 			$partners = $this->db->query("SELECT * FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' ORDER BY RAND();")->result_array();
 		}*/
@@ -1051,7 +1051,13 @@ class User extends CI_Controller {
 	public function should_user_be_skipped() {
 		$userID = intval($this->input->post('user_id'));
 		$partnerUserID = intval($this->input->post('partner_user_id'));
-		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID . " AND `candidate_user_id`=" . $partnerUserID)
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID)->row_array();
+		if (intval($user['candidate_user_id']) != $userID) {
+			echo json_encode(array('response_code' => 1));
+			return;
+		}
+		echo json_encode(array('response_code' => 0));
+		/*$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID . " AND `candidate_user_id`=" . $partnerUserID)
 			->num_rows();
 		if ($userCount > 0) {
 			echo json_encode(array('response_code' => 0));
@@ -1073,6 +1079,6 @@ class User extends CI_Controller {
 			echo json_encode(array('response_code' => 1));
 			return;
 		}
-		echo json_encode(array('response_code' => 0));
+		echo json_encode(array('response_code' => 0));*/
 	}
 }
