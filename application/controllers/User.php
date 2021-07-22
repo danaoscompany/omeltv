@@ -1043,4 +1043,27 @@ class User extends CI_Controller {
 		$userID = intval($this->input->post('user_id'));
 		$this->db->query("UPDATE `users` SET `is_searching`=0, `user_find_candidate`=0, `candidate_user_id`=0 WHERE `id`=" . $userID);
 	}
+	
+	public function should_user_be_skipped() {
+		$userID = intval($this->input->post('user_id'));
+		$partnerUserID = intval($this->input->post('partner_user_id'));
+		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID . " AND `candidate_user_id`=" . $partnerUserID)
+			->num_rows();
+		if ($userCount > 0) {
+			echo json_encode(array('response_code' => 0));
+			return;
+		}
+		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID . " AND `candidate_user_id`=" . $userID)
+			->num_rows();
+		if ($userCount > 0) {
+			echo json_encode(array('response_code' => 0));
+			return;
+		}
+		$userCount = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $partnerUserID . " AND `user_find_candidate`=1 AND `candidate_user_id`!=" . $userID)->num_rows();
+		if ($userCount > 0) {
+			echo json_encode(array('response_code' => 1));
+			return;
+		}
+		echo json_encode(array('response_code' => 1));
+	}
 }
