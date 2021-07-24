@@ -266,14 +266,12 @@ class User extends CI_Controller {
 			if (sizeof($partners) > 0) {
 				$partners[0]['command'] = "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `is_searching`=1 AND `country_code`='" . $countryCode . "' AND (`user_find_candidate`=0 OR (`user_find_candidate`=1 AND `candidate_user_id`=" . $userID . ")) ORDER BY RAND();";
 			}
-			echo "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `is_searching`=1 AND `country_code`='" . $countryCode . "' AND (`user_find_candidate`=0 OR (`user_find_candidate`=1 AND `candidate_user_id`=" . $userID . ")) ORDER BY RAND();";
 		} else {
 			/*$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `last_searching_date` IS NOT NULL AND `last_searching_date` BETWEEN DATE_SUB('" . $date . "', INTERVAL 1 MINUTE) AND '" . $date . "' ORDER BY distance;")->result_array();*/
 			$partners = $this->db->query("SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' AND (`user_find_candidate`=0 OR (`user_find_candidate`=1 AND `candidate_user_id`=" . $userID . ")) ORDER BY RAND();")->result_array();
 			if (sizeof($partners) > 0) {
 				$partners[0]['command'] = "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' AND (`user_find_candidate`=0 OR (`user_find_candidate`=1 AND `candidate_user_id`=" . $userID . ")) ORDER BY RAND();";
 			}
-			echo "SELECT *, SQRT(POW(69.1 * (latitude - " . $lat . "), 2) + POW(69.1 * (" . $lng . " - longitude) * COS(latitude / 57.3), 2)) AS distance FROM `users` WHERE `id`!=" . $userID . " AND `id` NOT IN " . $skippedIDs . " AND `gender`='" . $category . "' AND `is_searching`=1 AND `country_code`='" . $countryCode . "' AND (`user_find_candidate`=0 OR (`user_find_candidate`=1 AND `candidate_user_id`=" . $userID . ")) ORDER BY RAND();";
 		}
 		/* FOR TEST ONLY */
 		/*if ($userID == 8) {
